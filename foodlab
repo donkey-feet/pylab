@@ -1,0 +1,1140 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jebediah's Recipe Profile Survey</title>
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --card: #f9fafb;
+      --accent: #2563eb;
+      --ok: #059669;
+      --warn: #b45309;
+      --bad: #dc2626;
+      --radius: 12px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.35;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 24px auto 64px;
+      padding: 0 16px;
+    }
+
+    h1 { margin: 0 0 6px; font-size: 28px; }
+    .sub { margin: 0 0 18px; color: var(--muted); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width: 980px) {
+      .grid {
+        grid-template-columns: 1.2fr 0.8fr;
+      }
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: 0 1px 0 rgba(0,0,0,.02);
+    }
+
+    details.card { padding: 0; overflow: hidden; }
+    details.card > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 14px;
+      font-weight: 650;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    details.card > summary::-webkit-details-marker { display: none; }
+    details.card[open] > summary { background: #fff; }
+    .summary-right { color: var(--muted); font-weight: 500; font-size: 13px; }
+    .card-body { padding: 14px; }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    @media (min-width: 720px) {
+      .row.two { grid-template-columns: 1fr 1fr; }
+      .row.three { grid-template-columns: 1fr 1fr 1fr; }
+    }
+
+    label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 6px; }
+    input[type="text"], input[type="number"], select, textarea {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 10px;
+      font: inherit;
+      background: #fff;
+      color: var(--text);
+    }
+    textarea { min-height: 90px; resize: vertical; font-family: var(--sans); }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px;
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      background: #fff;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+    }
+    .chip button {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1;
+    }
+    .chip button:hover { color: var(--bad); }
+
+    .chip-input {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .checkgrid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px 14px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+    }
+    @media (min-width: 720px) {
+      .checkgrid.two { grid-template-columns: 1fr 1fr; }
+      .checkgrid.three { grid-template-columns: 1fr 1fr 1fr; }
+    }
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .check input { width: 16px; height: 16px; }
+
+    .btnbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button.primary, button.ghost, button.danger {
+      border-radius: 10px;
+      padding: 10px 12px;
+      font: inherit;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+    button.primary {
+      border-color: rgba(37, 99, 235, .35);
+      background: rgba(37, 99, 235, .08);
+      color: #0b3aa6;
+    }
+    button.primary:hover { background: rgba(37, 99, 235, .12); }
+    button.ghost:hover { background: #f3f4f6; }
+    button.danger {
+      border-color: rgba(220, 38, 38, .35);
+      background: rgba(220, 38, 38, .08);
+      color: #7f1d1d;
+    }
+    button.danger:hover { background: rgba(220, 38, 38, .12); }
+
+    .status {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .status b.ok { color: var(--ok); }
+    .status b.warn { color: var(--warn); }
+    .status b.bad { color: var(--bad); }
+
+    pre {
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.35;
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #0b1220;
+      color: #e5e7eb;
+      border-radius: 12px;
+      padding: 12px;
+      border: 1px solid rgba(229,231,235,.12);
+      margin: 10px 0 0;
+      min-height: 120px;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .mono { font-family: var(--mono); }
+
+    .small { font-size: 12px; color: var(--muted); }
+
+    .sticky {
+      position: sticky;
+      top: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <h1>Recipe Profile Survey</h1>
+    <p class="sub">Fill this out once. Then export the JSON and paste it to ChatGPT (or later, an AI endpoint) to generate/refine recipes.</p>
+
+    <div class="grid">
+      <!-- LEFT: SURVEY -->
+      <div>
+        <details class="card" open>
+          <summary>
+            Basics
+            <span class="summary-right">servings • budget • leftovers</span>
+          </summary>
+          <div class="card-body">
+            <div class="row three">
+              <div>
+                <label for="servings">Typical servings</label>
+                <input id="servings" type="number" min="1" step="1" value="2" />
+              </div>
+              <div>
+                <label for="budget">Budget</label>
+                <select id="budget">
+                  <option value="low">Low</option>
+                  <option value="moderate" selected>Moderate</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+              <div>
+                <label for="leftovers_ok">Leftovers?</label>
+                <select id="leftovers_ok">
+                  <option value="yes" selected>Yes</option>
+                  <option value="no">No</option>
+                  <option value="sometimes">Sometimes</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row two">
+              <div>
+                <label for="household_notes">Household notes (kids? picky eaters? anything special)</label>
+                <textarea id="household_notes" placeholder="e.g., 1 picky eater hates onions, kid-friendly on weekdays"></textarea>
+              </div>
+              <div>
+                <label for="meal_types">Meal types you want ideas for</label>
+                <div class="checkgrid two" id="meal_types">
+                  <label class="check"><input type="checkbox" value="breakfast">Breakfast</label>
+                  <label class="check"><input type="checkbox" value="lunch">Lunch</label>
+                  <label class="check"><input type="checkbox" value="dinner" checked>Dinner</label>
+                  <label class="check"><input type="checkbox" value="snack">Snack</label>
+                  <label class="check"><input type="checkbox" value="dessert">Dessert</label>
+                  <label class="check"><input type="checkbox" value="meal_prep">Meal prep</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="card" open>
+          <summary>
+            Diet, restrictions, and “hard no’s”
+            <span class="summary-right">allergies • avoids • styles</span>
+          </summary>
+          <div class="card-body">
+            <div class="row two">
+              <div>
+                <label>Diet styles (choose any)</label>
+                <div class="checkgrid three" id="diet_styles">
+                  <label class="check"><input type="checkbox" value="omnivore" checked>Omnivore</label>
+                  <label class="check"><input type="checkbox" value="vegetarian">Vegetarian</label>
+                  <label class="check"><input type="checkbox" value="vegan">Vegan</label>
+                  <label class="check"><input type="checkbox" value="pescatarian">Pescatarian</label>
+                  <label class="check"><input type="checkbox" value="keto">Keto</label>
+                  <label class="check"><input type="checkbox" value="low_carb">Low carb</label>
+                  <label class="check"><input type="checkbox" value="mediterranean">Mediterranean</label>
+                  <label class="check"><input type="checkbox" value="high_protein">High protein</label>
+                  <label class="check"><input type="checkbox" value="low_sodium">Low sodium</label>
+                  <label class="check"><input type="checkbox" value="gluten_free">Gluten-free</label>
+                  <label class="check"><input type="checkbox" value="dairy_free">Dairy-free</label>
+                  <label class="check"><input type="checkbox" value="whole30">Whole30-ish</label>
+                </div>
+                <div class="hint">If something is strict (medical/allergy), also add it below.</div>
+              </div>
+
+              <div>
+                <label>Allergies / medical restrictions (high priority)</label>
+                <div class="chips" id="allergies_chips"></div>
+                <div class="chip-input">
+                  <input id="allergies_add" type="text" placeholder="e.g., peanuts, shellfish, celiac" />
+                  <button class="ghost" id="allergies_btn" type="button">Add</button>
+                </div>
+                <div class="hint">These should be treated as non-negotiable.</div>
+              </div>
+            </div>
+
+            <div class="row two">
+              <div>
+                <label>Ingredients to avoid (preference, “I hate ___”)</label>
+                <div class="chips" id="avoid_chips"></div>
+                <div class="chip-input">
+                  <input id="avoid_add" type="text" placeholder="e.g., cilantro, olives, liver" />
+                  <button class="ghost" id="avoid_btn" type="button">Add</button>
+                </div>
+              </div>
+
+              <div>
+                <label>Absolute hard no’s (never show recipes with these)</label>
+                <div class="chips" id="hardno_chips"></div>
+                <div class="chip-input">
+                  <input id="hardno_add" type="text" placeholder="e.g., shellfish, mushrooms, pork" />
+                  <button class="ghost" id="hardno_btn" type="button">Add</button>
+                </div>
+                <div class="hint">Use this for strict bans (religious, medical, etc.).</div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="card" open>
+          <summary>
+            Likes: ingredients, cuisines, flavors
+            <span class="summary-right">favorites • cuisines • flavor profile</span>
+          </summary>
+          <div class="card-body">
+            <div class="row two">
+              <div>
+                <label>Favorite ingredients / proteins / staples</label>
+                <div class="chips" id="favorites_chips"></div>
+                <div class="chip-input">
+                  <input id="favorites_add" type="text" placeholder="e.g., chicken thighs, chickpeas, garlic, rice" />
+                  <button class="ghost" id="favorites_btn" type="button">Add</button>
+                </div>
+              </div>
+
+              <div>
+                <label>Cuisines you like</label>
+                <div class="chips" id="cuisines_like_chips"></div>
+                <div class="chip-input">
+                  <input id="cuisines_like_add" type="text" placeholder="e.g., Mexican, Thai, Italian" />
+                  <button class="ghost" id="cuisines_like_btn" type="button">Add</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="row two">
+              <div>
+                <label>Cuisines you want less of / avoid</label>
+                <div class="chips" id="cuisines_avoid_chips"></div>
+                <div class="chip-input">
+                  <input id="cuisines_avoid_add" type="text" placeholder="e.g., very creamy French, super sweet BBQ" />
+                  <button class="ghost" id="cuisines_avoid_btn" type="button">Add</button>
+                </div>
+              </div>
+
+              <div>
+                <label for="spice_level">Spice tolerance</label>
+                <select id="spice_level">
+                  <option value="none">None</option>
+                  <option value="mild">Mild</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="hot">Hot</option>
+                  <option value="very_hot">Very hot</option>
+                </select>
+
+                <div class="row two" style="margin-top: 12px;">
+                  <div>
+                    <label>Flavor vibes you like</label>
+                    <div class="checkgrid two" id="flavor_like">
+                      <label class="check"><input type="checkbox" value="savory" checked>Savory</label>
+                      <label class="check"><input type="checkbox" value="spicy">Spicy</label>
+                      <label class="check"><input type="checkbox" value="acidic">Acidic / bright</label>
+                      <label class="check"><input type="checkbox" value="smoky">Smoky</label>
+                      <label class="check"><input type="checkbox" value="herby">Herby</label>
+                      <label class="check"><input type="checkbox" value="sweet_savory">Sweet-salty</label>
+                      <label class="check"><input type="checkbox" value="umami">Umami</label>
+                      <label class="check"><input type="checkbox" value="creamy">Creamy</label>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label>Flavor vibes you dislike</label>
+                    <div class="checkgrid two" id="flavor_dislike">
+                      <label class="check"><input type="checkbox" value="too_sweet">Too sweet</label>
+                      <label class="check"><input type="checkbox" value="too_vinegary">Too vinegary</label>
+                      <label class="check"><input type="checkbox" value="too_fishy">Too fishy</label>
+                      <label class="check"><input type="checkbox" value="too_garlicky">Too garlicky</label>
+                      <label class="check"><input type="checkbox" value="too_spicy">Too spicy</label>
+                      <label class="check"><input type="checkbox" value="too_creamy">Too creamy</label>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="card" open>
+          <summary>
+            Texture and “food personality”
+            <span class="summary-right">crispy vs soft • soups • salads</span>
+          </summary>
+          <div class="card-body">
+            <div class="row two">
+              <div>
+                <label>Textures you like</label>
+                <div class="checkgrid two" id="textures_like">
+                  <label class="check"><input type="checkbox" value="crispy" checked>Crispy</label>
+                  <label class="check"><input type="checkbox" value="crunchy">Crunchy</label>
+                  <label class="check"><input type="checkbox" value="saucy" checked>Saucy</label>
+                  <label class="check"><input type="checkbox" value="chewy">Chewy</label>
+                  <label class="check"><input type="checkbox" value="tender">Tender</label>
+                  <label class="check"><input type="checkbox" value="creamy">Creamy</label>
+                </div>
+              </div>
+
+              <div>
+                <label>Textures you avoid</label>
+                <div class="checkgrid two" id="textures_avoid">
+                  <label class="check"><input type="checkbox" value="mushy">Mushy</label>
+                  <label class="check"><input type="checkbox" value="slimy">Slimy</label>
+                  <label class="check"><input type="checkbox" value="gritty">Gritty</label>
+                  <label class="check"><input type="checkbox" value="dry">Dry</label>
+                  <label class="check"><input type="checkbox" value="soggy">Soggy</label>
+                  <label class="check"><input type="checkbox" value="rubbery">Rubbery</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row three">
+              <div>
+                <label for="soups">Soup/stew frequency</label>
+                <select id="soups">
+                  <option value="love">Love</option>
+                  <option value="sometimes" selected>Sometimes</option>
+                  <option value="rare">Rare</option>
+                  <option value="never">Never</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="salads">Salad frequency</label>
+                <select id="salads">
+                  <option value="love">Love</option>
+                  <option value="sometimes" selected>Sometimes</option>
+                  <option value="rare">Rare</option>
+                  <option value="never">Never</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="one_pot">One-pot / sheet-pan preference</label>
+                <select id="one_pot">
+                  <option value="prefer" selected>Prefer</option>
+                  <option value="neutral">Neutral</option>
+                  <option value="avoid">Avoid</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="card" open>
+          <summary>
+            Time, skill, equipment
+            <span class="summary-right">weeknights • weekends • tools</span>
+          </summary>
+          <div class="card-body">
+            <div class="row three">
+              <div>
+                <label for="weeknight_time">Weeknight time limit (minutes)</label>
+                <input id="weeknight_time" type="number" min="5" step="5" value="30" />
+              </div>
+              <div>
+                <label for="weekend_time">Weekend time limit (minutes)</label>
+                <input id="weekend_time" type="number" min="5" step="5" value="90" />
+              </div>
+              <div>
+                <label for="skill">Cooking skill level</label>
+                <select id="skill">
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate" selected>Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row two">
+              <div>
+                <label for="effort">Effort tolerance (cleanup + steps)</label>
+                <select id="effort">
+                  <option value="minimal" selected>Minimal (few steps, low dishes)</option>
+                  <option value="moderate">Moderate</option>
+                  <option value="project">Project cooking is fun</option>
+                </select>
+              </div>
+              <div>
+                <label for="shopping_style">Shopping preference</label>
+                <select id="shopping_style">
+                  <option value="use_what_i_have" selected>Use what I have first</option>
+                  <option value="ok_to_buy_special">OK to buy specialty items sometimes</option>
+                  <option value="minimal_grocery">Keep grocery list minimal</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label>Equipment you have</label>
+                <div class="checkgrid three" id="equipment">
+                  <label class="check"><input type="checkbox" value="stovetop" checked>Stovetop</label>
+                  <label class="check"><input type="checkbox" value="oven" checked>Oven</label>
+                  <label class="check"><input type="checkbox" value="microwave" checked>Microwave</label>
+                  <label class="check"><input type="checkbox" value="air_fryer">Air fryer</label>
+                  <label class="check"><input type="checkbox" value="instant_pot">Instant Pot / pressure cooker</label>
+                  <label class="check"><input type="checkbox" value="slow_cooker">Slow cooker</label>
+                  <label class="check"><input type="checkbox" value="blender">Blender</label>
+                  <label class="check"><input type="checkbox" value="food_processor">Food processor</label>
+                  <label class="check"><input type="checkbox" value="grill">Grill</label>
+                  <label class="check"><input type="checkbox" value="rice_cooker">Rice cooker</label>
+                  <label class="check"><input type="checkbox" value="stand_mixer">Stand mixer</label>
+                  <label class="check"><input type="checkbox" value="cast_iron">Cast iron</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row two">
+              <div>
+                <label>Cooking methods you prefer</label>
+                <div class="checkgrid two" id="methods_prefer">
+                  <label class="check"><input type="checkbox" value="sheet_pan" checked>Sheet-pan</label>
+                  <label class="check"><input type="checkbox" value="one_pot" checked>One-pot</label>
+                  <label class="check"><input type="checkbox" value="stir_fry">Stir-fry</label>
+                  <label class="check"><input type="checkbox" value="grilling">Grilling</label>
+                  <label class="check"><input type="checkbox" value="roasting" checked>Roasting</label>
+                  <label class="check"><input type="checkbox" value="no_cook">No-cook</label>
+                </div>
+              </div>
+              <div>
+                <label>Cooking methods you avoid</label>
+                <div class="checkgrid two" id="methods_avoid">
+                  <label class="check"><input type="checkbox" value="deep_fry">Deep-fry</label>
+                  <label class="check"><input type="checkbox" value="complex_baking">Complex baking</label>
+                  <label class="check"><input type="checkbox" value="smoking">Smoking</label>
+                  <label class="check"><input type="checkbox" value="fermentation">Fermentation</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="card" open>
+          <summary>
+            Nutrition and goals
+            <span class="summary-right">protein • calories • sodium</span>
+          </summary>
+          <div class="card-body">
+            <div class="row three">
+              <div>
+                <label for="protein_min">Protein target (g per meal, optional)</label>
+                <input id="protein_min" type="number" min="0" step="5" placeholder="e.g., 35" />
+              </div>
+              <div>
+                <label for="calories_target">Calories target (per meal, optional)</label>
+                <input id="calories_target" type="number" min="0" step="50" placeholder="e.g., 650" />
+              </div>
+              <div>
+                <label for="sodium_max">Sodium limit (mg per meal, optional)</label>
+                <input id="sodium_max" type="number" min="0" step="50" placeholder="e.g., 900" />
+              </div>
+            </div>
+
+            <div class="row three">
+              <div>
+                <label for="fiber_min">Fiber target (g per meal, optional)</label>
+                <input id="fiber_min" type="number" min="0" step="1" placeholder="e.g., 8" />
+              </div>
+              <div>
+                <label for="carb_pref">Carb preference</label>
+                <select id="carb_pref">
+                  <option value="no_preference" selected>No preference</option>
+                  <option value="lower_carb">Lower carb</option>
+                  <option value="balanced">Balanced</option>
+                  <option value="higher_carb">Higher carb (active/training)</option>
+                </select>
+              </div>
+              <div>
+                <label for="portion_style">Portion style</label>
+                <select id="portion_style">
+                  <option value="normal" selected>Normal</option>
+                  <option value="lighter">Lighter / smaller portions</option>
+                  <option value="heartier">Heartier / larger portions</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row two">
+              <div>
+                <label for="macro_notes">Notes (e.g., “prioritize protein, but keep it tasty”)</label>
+                <textarea id="macro_notes" placeholder="Anything about nutrition goals or tradeoffs."></textarea>
+              </div>
+              <div>
+                <label>Ingredients you want more of (for goals)</label>
+                <div class="chips" id="moreof_chips"></div>
+                <div class="chip-input">
+                  <input id="moreof_add" type="text" placeholder="e.g., leafy greens, beans, fish" />
+                  <button class="ghost" id="moreof_btn" type="button">Add</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </details>
+
+        <details class="card" open>
+          <summary>
+            Pantry + “what I usually have”
+            <span class="summary-right">staples • sauces • herbs</span>
+          </summary>
+          <div class="card-body">
+            <div class="row two">
+              <div>
+                <label>Staples you usually have</label>
+                <div class="chips" id="staples_chips"></div>
+                <div class="chip-input">
+                  <input id="staples_add" type="text" placeholder="e.g., rice, pasta, tortillas, canned tomatoes" />
+                  <button class="ghost" id="staples_btn" type="button">Add</button>
+                </div>
+              </div>
+              <div>
+                <label>Sauces/condiments you keep</label>
+                <div class="chips" id="condiments_chips"></div>
+                <div class="chip-input">
+                  <input id="condiments_add" type="text" placeholder="e.g., soy sauce, hot sauce, mustard, tahini" />
+                  <button class="ghost" id="condiments_btn" type="button">Add</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="row two">
+              <div>
+                <label>Spices/herbs you like using</label>
+                <div class="chips" id="spices_chips"></div>
+                <div class="chip-input">
+                  <input id="spices_add" type="text" placeholder="e.g., cumin, paprika, basil, rosemary" />
+                  <button class="ghost" id="spices_btn" type="button">Add</button>
+                </div>
+              </div>
+              <div>
+                <label for="pantry_notes">Pantry notes (brand preferences, “always have X”)</label>
+                <textarea id="pantry_notes" placeholder="Optional notes about pantry habits."></textarea>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="card" open>
+          <summary>
+            Notes for the AI
+            <span class="summary-right">anything you want it to remember</span>
+          </summary>
+          <div class="card-body">
+            <div class="row">
+              <div>
+                <label for="ai_notes">Anything else the AI should know?</label>
+                <textarea id="ai_notes" placeholder="e.g., prefer metric, hate wasting food, love leftovers for lunch, avoid super spicy on weekdays"></textarea>
+                <div class="hint">This will be included in the JSON as free-form notes.</div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <div class="card">
+          <div class="btnbar">
+            <button class="primary" id="save_btn" type="button">Save</button>
+            <button class="ghost" id="copy_btn" type="button">Copy JSON</button>
+            <button class="ghost" id="download_btn" type="button">Download JSON</button>
+            <button class="ghost" id="import_btn" type="button">Import JSON</button>
+            <button class="danger" id="reset_btn" type="button">Reset</button>
+            <span class="status" id="status">Status: <b class="warn">Not saved yet</b></span>
+          </div>
+          <p class="small" style="margin: 10px 0 0;">
+            Tip: After you fill this out, click <b>Copy JSON</b> and paste it into ChatGPT with your request
+            (e.g., “Generate 10 weeknight dinners that fit my profile and use pantry staples whenever possible”).
+          </p>
+        </div>
+      </div>
+
+      <!-- RIGHT: JSON / EXPORT -->
+      <div class="sticky">
+        <div class="card">
+          <div class="btnbar" style="justify-content: space-between;">
+            <div>
+              <div style="font-weight: 650;">Current profile JSON</div>
+              <div class="small">Auto-updates as you type.</div>
+            </div>
+            <div class="small mono" id="autosave">autosave: off</div>
+          </div>
+          <pre id="json_out">{}</pre>
+        </div>
+
+        <div class="card">
+          <div style="font-weight: 650; margin-bottom: 8px;">Import JSON</div>
+          <label for="import_area">Paste a JSON profile to load it into the form</label>
+          <textarea id="import_area" placeholder='Paste JSON here...'></textarea>
+          <div class="btnbar" style="margin-top: 10px;">
+            <button class="primary" id="apply_import" type="button">Apply import</button>
+            <span class="status" id="import_status"></span>
+          </div>
+          <div class="hint">If you later tweak your profile with ChatGPT, you can paste it back here and keep iterating.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const STORAGE_KEY = "jebediah_recipe_profile_v1";
+
+  // ---------- helpers ----------
+  function qs(id) { return document.getElementById(id); }
+  function nowISO() { return new Date().toISOString(); }
+
+  function cleanToken(s) {
+    return (s || "")
+      .trim()
+      .replace(/\s+/g, " ");
+  }
+
+  function splitTokens(s) {
+    // Allow comma-separated or newline separated
+    return (s || "")
+      .split(/[\n,]+/g)
+      .map(cleanToken)
+      .filter(Boolean);
+  }
+
+  function dedupe(arr) {
+    const seen = new Set();
+    const out = [];
+    for (const x of arr) {
+      const k = x.toLowerCase();
+      if (!seen.has(k)) { seen.add(k); out.push(x); }
+    }
+    return out;
+  }
+
+  function readCheckedValues(containerId) {
+    const el = qs(containerId);
+    if (!el) return [];
+    return Array.from(el.querySelectorAll('input[type="checkbox"]:checked'))
+      .map(x => x.value);
+  }
+
+  function setCheckedValues(containerId, values) {
+    const el = qs(containerId);
+    if (!el) return;
+    const set = new Set((values || []).map(v => String(v)));
+    Array.from(el.querySelectorAll('input[type="checkbox"]'))
+      .forEach(cb => cb.checked = set.has(cb.value));
+  }
+
+  // ---------- chips (tag lists) ----------
+  function makeChipsAPI(chipsId, inputId, btnId) {
+    const chipsEl = qs(chipsId);
+    const inputEl = qs(inputId);
+    const btnEl = qs(btnId);
+
+    let items = [];
+
+    function render() {
+      chipsEl.innerHTML = "";
+      if (items.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "small";
+        empty.textContent = "None";
+        chipsEl.appendChild(empty);
+        return;
+      }
+      for (const item of items) {
+        const chip = document.createElement("span");
+        chip.className = "chip";
+        chip.innerHTML = `<span>${escapeHtml(item)}</span>`;
+        const x = document.createElement("button");
+        x.type = "button";
+        x.title = "Remove";
+        x.textContent = "×";
+        x.addEventListener("click", () => {
+          items = items.filter(v => v.toLowerCase() !== item.toLowerCase());
+          render();
+          scheduleAutoSave();
+          refreshJSON();
+        });
+        chip.appendChild(x);
+        chipsEl.appendChild(chip);
+      }
+    }
+
+    function addFromInput() {
+      const newItems = splitTokens(inputEl.value);
+      if (newItems.length === 0) return;
+      items = dedupe(items.concat(newItems));
+      inputEl.value = "";
+      render();
+      scheduleAutoSave();
+      refreshJSON();
+    }
+
+    btnEl.addEventListener("click", addFromInput);
+    inputEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); addFromInput(); }
+    });
+
+    function get() { return items.slice(); }
+    function set(arr) { items = dedupe((arr || []).map(cleanToken).filter(Boolean)); render(); }
+
+    // initial
+    render();
+    return { get, set, render };
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  // ---------- initialize chips lists ----------
+  const chips = {
+    allergies: makeChipsAPI("allergies_chips", "allergies_add", "allergies_btn"),
+    avoid: makeChipsAPI("avoid_chips", "avoid_add", "avoid_btn"),
+    hardno: makeChipsAPI("hardno_chips", "hardno_add", "hardno_btn"),
+    favorites: makeChipsAPI("favorites_chips", "favorites_add", "favorites_btn"),
+    cuisines_like: makeChipsAPI("cuisines_like_chips", "cuisines_like_add", "cuisines_like_btn"),
+    cuisines_avoid: makeChipsAPI("cuisines_avoid_chips", "cuisines_avoid_add", "cuisines_avoid_btn"),
+    moreof: makeChipsAPI("moreof_chips", "moreof_add", "moreof_btn"),
+    staples: makeChipsAPI("staples_chips", "staples_add", "staples_btn"),
+    condiments: makeChipsAPI("condiments_chips", "condiments_add", "condiments_btn"),
+    spices: makeChipsAPI("spices_chips", "spices_add", "spices_btn"),
+  };
+
+  // ---------- profile build ----------
+  function buildProfile() {
+    const servings = Number(qs("servings").value || 2);
+    const budget = qs("budget").value;
+    const leftovers_ok = qs("leftovers_ok").value;
+
+    // Optional numeric fields
+    const protein_min = qs("protein_min").value ? Number(qs("protein_min").value) : null;
+    const calories_target = qs("calories_target").value ? Number(qs("calories_target").value) : null;
+    const sodium_max = qs("sodium_max").value ? Number(qs("sodium_max").value) : null;
+    const fiber_min = qs("fiber_min").value ? Number(qs("fiber_min").value) : null;
+
+    const profile = {
+      meta: {
+        schema: "recipe_profile_v1",
+        updated_at: nowISO()
+      },
+      basics: {
+        servings: isFinite(servings) ? servings : 2,
+        budget,
+        leftovers: leftovers_ok,
+        meal_types: readCheckedValues("meal_types"),
+        household_notes: cleanToken(qs("household_notes").value)
+      },
+      diet: {
+        styles: readCheckedValues("diet_styles"),
+        allergies: chips.allergies.get(),
+        avoid_ingredients: chips.avoid.get(),
+        hard_nos: chips.hardno.get()
+      },
+      likes: {
+        favorite_ingredients: chips.favorites.get(),
+        cuisines_like: chips.cuisines_like.get(),
+        cuisines_avoid: chips.cuisines_avoid.get(),
+        spice_level: qs("spice_level").value,
+        flavors_like: readCheckedValues("flavor_like"),
+        flavors_dislike: readCheckedValues("flavor_dislike")
+      },
+      texture: {
+        like: readCheckedValues("textures_like"),
+        avoid: readCheckedValues("textures_avoid"),
+        soups: qs("soups").value,
+        salads: qs("salads").value,
+        one_pot_preference: qs("one_pot").value
+      },
+      constraints: {
+        weeknight_time_minutes: Number(qs("weeknight_time").value || 30),
+        weekend_time_minutes: Number(qs("weekend_time").value || 90),
+        skill_level: qs("skill").value,
+        effort: qs("effort").value,
+        shopping_style: qs("shopping_style").value,
+        equipment: readCheckedValues("equipment"),
+        methods_prefer: readCheckedValues("methods_prefer"),
+        methods_avoid: readCheckedValues("methods_avoid")
+      },
+      goals: {
+        protein_g_min_per_meal: protein_min,
+        calories_per_meal_target: calories_target,
+        sodium_mg_max_per_meal: sodium_max,
+        fiber_g_min_per_meal: fiber_min,
+        carb_preference: qs("carb_pref").value,
+        portion_style: qs("portion_style").value,
+        ingredients_want_more_of: chips.moreof.get(),
+        macro_notes: cleanToken(qs("macro_notes").value)
+      },
+      pantry: {
+        staples: chips.staples.get(),
+        condiments: chips.condiments.get(),
+        spices_herbs: chips.spices.get(),
+        pantry_notes: cleanToken(qs("pantry_notes").value)
+      },
+      notes_for_ai: cleanToken(qs("ai_notes").value)
+    };
+
+    return profile;
+  }
+
+  function refreshJSON() {
+    const profile = buildProfile();
+    qs("json_out").textContent = JSON.stringify(profile, null, 2);
+  }
+
+  // ---------- saving / loading ----------
+  function setStatus(kind, text) {
+    const status = qs("status");
+    const cls = kind === "ok" ? "ok" : kind === "bad" ? "bad" : "warn";
+    status.innerHTML = `Status: <b class="${cls}">${escapeHtml(text)}</b>`;
+  }
+
+  function saveProfile() {
+    const profile = buildProfile();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+    setStatus("ok", "Saved to this browser");
+    qs("autosave").textContent = "autosave: on";
+  }
+
+  function loadProfile() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  function applyProfile(profile) {
+    // Basics
+    qs("servings").value = profile?.basics?.servings ?? 2;
+    qs("budget").value = profile?.basics?.budget ?? "moderate";
+    qs("leftovers_ok").value = profile?.basics?.leftovers ?? "yes";
+    qs("household_notes").value = profile?.basics?.household_notes ?? "";
+    setCheckedValues("meal_types", profile?.basics?.meal_types ?? ["dinner"]);
+
+    // Diet
+    setCheckedValues("diet_styles", profile?.diet?.styles ?? ["omnivore"]);
+    chips.allergies.set(profile?.diet?.allergies ?? []);
+    chips.avoid.set(profile?.diet?.avoid_ingredients ?? []);
+    chips.hardno.set(profile?.diet?.hard_nos ?? []);
+
+    // Likes
+    chips.favorites.set(profile?.likes?.favorite_ingredients ?? []);
+    chips.cuisines_like.set(profile?.likes?.cuisines_like ?? []);
+    chips.cuisines_avoid.set(profile?.likes?.cuisines_avoid ?? []);
+    qs("spice_level").value = profile?.likes?.spice_level ?? "medium";
+    setCheckedValues("flavor_like", profile?.likes?.flavors_like ?? []);
+    setCheckedValues("flavor_dislike", profile?.likes?.flavors_dislike ?? []);
+
+    // Texture
+    setCheckedValues("textures_like", profile?.texture?.like ?? []);
+    setCheckedValues("textures_avoid", profile?.texture?.avoid ?? []);
+    qs("soups").value = profile?.texture?.soups ?? "sometimes";
+    qs("salads").value = profile?.texture?.salads ?? "sometimes";
+    qs("one_pot").value = profile?.texture?.one_pot_preference ?? "prefer";
+
+    // Constraints
+    qs("weeknight_time").value = profile?.constraints?.weeknight_time_minutes ?? 30;
+    qs("weekend_time").value = profile?.constraints?.weekend_time_minutes ?? 90;
+    qs("skill").value = profile?.constraints?.skill_level ?? "intermediate";
+    qs("effort").value = profile?.constraints?.effort ?? "minimal";
+    qs("shopping_style").value = profile?.constraints?.shopping_style ?? "use_what_i_have";
+    setCheckedValues("equipment", profile?.constraints?.equipment ?? ["stovetop", "oven", "microwave"]);
+    setCheckedValues("methods_prefer", profile?.constraints?.methods_prefer ?? []);
+    setCheckedValues("methods_avoid", profile?.constraints?.methods_avoid ?? []);
+
+    // Goals
+    qs("protein_min").value = profile?.goals?.protein_g_min_per_meal ?? "";
+    qs("calories_target").value = profile?.goals?.calories_per_meal_target ?? "";
+    qs("sodium_max").value = profile?.goals?.sodium_mg_max_per_meal ?? "";
+    qs("fiber_min").value = profile?.goals?.fiber_g_min_per_meal ?? "";
+    qs("carb_pref").value = profile?.goals?.carb_preference ?? "no_preference";
+    qs("portion_style").value = profile?.goals?.portion_style ?? "normal";
+    chips.moreof.set(profile?.goals?.ingredients_want_more_of ?? []);
+    qs("macro_notes").value = profile?.goals?.macro_notes ?? "";
+
+    // Pantry
+    chips.staples.set(profile?.pantry?.staples ?? []);
+    chips.condiments.set(profile?.pantry?.condiments ?? []);
+    chips.spices.set(profile?.pantry?.spices_herbs ?? []);
+    qs("pantry_notes").value = profile?.pantry?.pantry_notes ?? "";
+
+    // Notes
+    qs("ai_notes").value = profile?.notes_for_ai ?? "";
+
+    refreshJSON();
+  }
+
+  // ---------- import / export ----------
+  async function copyJSON() {
+    const text = qs("json_out").textContent;
+    await navigator.clipboard.writeText(text);
+    setStatus("ok", "JSON copied to clipboard");
+  }
+
+  function downloadJSON() {
+    const profile = buildProfile();
+    const blob = new Blob([JSON.stringify(profile, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "recipe_profile.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(a.href);
+    setStatus("ok", "Downloaded recipe_profile.json");
+  }
+
+  function resetAll() {
+    localStorage.removeItem(STORAGE_KEY);
+    window.location.reload();
+  }
+
+  function basicValidateProfile(p) {
+    const problems = [];
+    if (!p || typeof p !== "object") problems.push("Not a JSON object.");
+    if (!p?.basics?.servings || p.basics.servings < 1) problems.push("basics.servings should be >= 1");
+    if (!Array.isArray(p?.diet?.hard_nos)) problems.push("diet.hard_nos should be an array");
+    if (!Array.isArray(p?.diet?.allergies)) problems.push("diet.allergies should be an array");
+    if (!p?.constraints?.weeknight_time_minutes) problems.push("constraints.weeknight_time_minutes missing");
+    return problems;
+  }
+
+  function importFromTextarea() {
+    const s = qs("import_area").value.trim();
+    const out = qs("import_status");
+    out.textContent = "";
+    if (!s) { out.innerHTML = `<b class="warn">Paste JSON first.</b>`; return; }
+
+    try {
+      const obj = JSON.parse(s);
+      const problems = basicValidateProfile(obj);
+      if (problems.length) {
+        out.innerHTML = `<b class="warn">Imported, but issues:</b><br>${problems.map(escapeHtml).join("<br>")}`;
+      } else {
+        out.innerHTML = `<b class="ok">Imported successfully.</b>`;
+      }
+      applyProfile(obj);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+      setStatus("ok", "Imported and saved to this browser");
+    } catch (e) {
+      out.innerHTML = `<b class="bad">Invalid JSON:</b> ${escapeHtml(e.message)}`;
+    }
+  }
+
+  // ---------- autosave ----------
+  let autosaveTimer = null;
+  function scheduleAutoSave() {
+    if (autosaveTimer) clearTimeout(autosaveTimer);
+    autosaveTimer = setTimeout(() => {
+      saveProfile();
+      autosaveTimer = null;
+    }, 700);
+  }
+
+  function wireInputsForAutosave() {
+    const inputs = document.querySelectorAll("input, select, textarea");
+    inputs.forEach(el => {
+      el.addEventListener("input", () => { refreshJSON(); scheduleAutoSave(); });
+      el.addEventListener("change", () => { refreshJSON(); scheduleAutoSave(); });
+    });
+
+    // checkboxes already covered by change/input above
+  }
+
+  // ---------- buttons ----------
+  qs("save_btn").addEventListener("click", () => { saveProfile(); refreshJSON(); });
+  qs("copy_btn").addEventListener("click", () => copyJSON().catch(() => setStatus("bad", "Clipboard blocked (try Download JSON)")));
+  qs("download_btn").addEventListener("click", () => { downloadJSON(); });
+  qs("import_btn").addEventListener("click", () => {
+    qs("import_area").focus();
+    qs("import_area").scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+  qs("apply_import").addEventListener("click", importFromTextarea);
+  qs("reset_btn").addEventListener("click", () => {
+    if (confirm("Reset everything? This clears saved data in this browser.")) resetAll();
+  });
+
+  // ---------- init ----------
+  wireInputsForAutosave();
+
+  const existing = loadProfile();
+  if (existing) {
+    applyProfile(existing);
+    setStatus("ok", "Loaded saved profile from this browser");
+    qs("autosave").textContent = "autosave: on";
+  } else {
+    refreshJSON();
+    setStatus("warn", "Not saved yet");
+    qs("autosave").textContent = "autosave: off";
+  }
+</script>
+</body>
+</html>
