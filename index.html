@@ -2,21 +2,65 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Python on my website</title>
+  <title>Python Playground</title>
 
   <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
   <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 900px; margin: 24px auto; padding: 0 16px; }
+    textarea { width: 100%; height: 220px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    pre { padding: 12px; border: 1px solid #ddd; border-radius: 8px; min-height: 80px; white-space: pre-wrap; }
+    button { padding: 10px 14px; font-size: 14px; }
+    .row { display: flex; gap: 12px; align-items: center; margin: 12px 0; }
+  </style>
 </head>
 
 <body>
-  <h1>Python running in the browser</h1>
-  <pre id="output">Loading PyScript…</pre>
+  <h1>Python Playground (runs in your browser)</h1>
+
+  <p>Type Python below and click Run.</p>
+
+  <textarea id="code">print("hello!")</textarea>
+
+  <div class="row">
+    <button id="run">Run</button>
+    <button id="clear">Clear output</button>
+  </div>
+
+  <h3>Output</h3>
+  <pre id="output">Ready.</pre>
 
   <script type="py">
 from js import document
-from datetime import datetime
 
-document.getElementById("output").innerText = "Hello from Python!\n" + str(datetime.now())
+code_el = document.getElementById("code")
+out_el = document.getElementById("output")
+run_btn = document.getElementById("run")
+clear_btn = document.getElementById("clear")
+
+def run_code(event=None):
+    # Clear output each run
+    out_el.innerText = ""
+
+    src = code_el.value
+
+    # Provide a print() that writes to the page
+    def page_print(*args, sep=" ", end="\n"):
+        out_el.innerText += sep.join(str(a) for a in args) + end
+
+    env = {"print": page_print}
+
+    try:
+        exec(src, env, env)
+    except Exception as e:
+        out_el.innerText += f"Error: {e}\n"
+
+def clear_output(event=None):
+    out_el.innerText = "Ready."
+
+run_btn.addEventListener("click", run_code)
+clear_btn.addEventListener("click", clear_output)
   </script>
 </body>
 </html>
