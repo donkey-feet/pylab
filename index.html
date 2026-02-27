@@ -31,7 +31,6 @@
   <h3>Output</h3>
   <pre id="output">Ready.</pre>
 
-  <script type="py">
 <script type="py">
 from js import document
 from pyodide.ffi import create_proxy
@@ -68,6 +67,5 @@ def clear_output(event=None):
 run_btn.addEventListener("click", create_proxy(run_code))
 clear_btn.addEventListener("click", create_proxy(clear_output))
 </script>
-  </script>
 </body>
 </html>
