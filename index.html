@@ -4,24 +4,20 @@
   <meta charset="utf-8">
   <title>Python on my website</title>
 
-  <!-- PyScript (NEW working config) -->
   <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
   <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
 </head>
 
 <body>
   <h1>Python running in the browser</h1>
-
   <pre id="output"></pre>
 
   <script type="py">
+from js import document
 from datetime import datetime
-from pyscript import Element
 
-out = Element("output")
-out.write("Hello from Python!\n")
-out.write(str(datetime.now()))
+out = document.getElementById("output")
+out.textContent = "Hello from Python!\n" + str(datetime.now())
   </script>
-
 </body>
 </html>
