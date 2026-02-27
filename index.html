@@ -59,8 +59,10 @@ def run_code(event=None):
 def clear_output(event=None):
     out_el.innerText = "Ready."
 
-run_btn.addEventListener("click", run_code)
-clear_btn.addEventListener("click", clear_output)
+from pyodide.ffi import create_proxy
+
+run_btn.addEventListener("click", create_proxy(run_code))
+clear_btn.addEventListener("click", create_proxy(clear_output))
   </script>
 </body>
 </html>
