@@ -10,14 +10,13 @@
 
 <body>
   <h1>Python running in the browser</h1>
-  <pre id="output"></pre>
+  <pre id="output">Loading PyScript…</pre>
 
   <script type="py">
 from js import document
 from datetime import datetime
 
-out = document.getElementById("output")
-out.textContent = "Hello from Python!\n" + str(datetime.now())
+document.getElementById("output").innerText = "Hello from Python!\n" + str(datetime.now())
   </script>
 </body>
 </html>
