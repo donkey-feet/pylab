@@ -1,10 +1,24 @@
 <!doctype html>
 <html>
 <head>
-  <title>My first site</title>
+  <title>Python on my website</title>
+
+  <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+  <script defer src="https://pyscript.net/latest/pyscript.js"></script>
 </head>
+
 <body>
-  <h1>Hello from GitHub Pages</h1>
-  <p>If you see this, your website works.</p>
+  <h1>Python running in the browser</h1>
+
+  <pre id="output"></pre>
+
+  <py-script>
+from datetime import datetime
+
+out = Element("output")
+out.write("Hello from Python!\n")
+out.write(str(datetime.now()))
+  </py-script>
+
 </body>
 </html>
