@@ -12,7 +12,8 @@
     textarea { width: 100%; height: 220px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
     pre { padding: 12px; border: 1px solid #ddd; border-radius: 8px; min-height: 80px; white-space: pre-wrap; }
     button { padding: 10px 14px; font-size: 14px; }
-    .row { display: flex; gap: 12px; align-items: center; margin: 12px 0; }
+    .row { display: flex; gap: 12px; align-items: center; margin: 12px 0; flex-wrap: wrap; }
+    label { user-select: none; }
   </style>
 </head>
 
@@ -26,6 +27,11 @@
   <div class="row">
     <button id="run">Run</button>
     <button id="clear">Clear output</button>
+
+    <label>
+      <input type="checkbox" id="append" checked>
+      Append output
+    </label>
   </div>
 
   <h3>Output</h3>
@@ -40,6 +46,7 @@ code_el = document.getElementById("code")
 out_el = document.getElementById("output")
 run_btn = document.getElementById("run")
 clear_btn = document.getElementById("clear")
+append_chk = document.getElementById("append")
 
 def set_output(text):
     out_el.innerText = text
@@ -48,7 +55,10 @@ def append_output(text):
     out_el.innerText += text
 
 def run_code(event=None):
-    set_output("")
+    # If Append is OFF, clear before running
+    if not append_chk.checked:
+        set_output("")
+
     src = code_el.value
 
     def page_print(*args, sep=" ", end="\n"):
@@ -57,7 +67,8 @@ def run_code(event=None):
     env = {"print": page_print}
 
     try:
-        exec(src, env, env)
+        code_obj = compile(src, "user_code.py", "exec")
+        exec(code_obj, env, env)
     except Exception:
         append_output(traceback.format_exc())
 
@@ -67,5 +78,6 @@ def clear_output(event=None):
 run_btn.addEventListener("click", create_proxy(run_code))
 clear_btn.addEventListener("click", create_proxy(clear_output))
 </script>
+
 </body>
 </html>
