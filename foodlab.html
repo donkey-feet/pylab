@@ -345,6 +345,36 @@
         </details>
 
         <details class="card" open>
+  <summary>
+    Health Conditions & Management
+    <span class="summary-right">diabetes • hypertension • GERD</span>
+  </summary>
+  <div class="card-body">
+    <div class="row two">
+      <div>
+        <label>Common conditions (select all that apply)</label>
+        <div class="checkgrid two" id="health_conditions">
+          <label class="check"><input type="checkbox" value="type_2_diabetes">Type 2 Diabetes / Prediabetes</label>
+          <label class="check"><input type="checkbox" value="hypertension">Hypertension (High Blood Pressure)</label>
+          <label class="check"><input type="checkbox" value="high_cholesterol">High Cholesterol / Heart Health</label>
+          <label class="check"><input type="checkbox" value="gerd_acid_reflux">GERD / Acid Reflux</label>
+          <label class="check"><input type="checkbox" value="ibs_fodmap">IBS / Low-FODMAP needed</label>
+          <label class="check"><input type="checkbox" value="kidney_disease">Kidney Disease (CKD)</label>
+          <label class="check"><input type="checkbox" value="gout">Gout</label>
+          <label class="check"><input type="checkbox" value="fatty_liver">Fatty Liver (MASLD/NAFLD)</label>
+        </div>
+      </div>
+
+      <div>
+        <label>Other health conditions or dietary notes</label>
+        <textarea id="health_notes" placeholder="e.g., gallbladder issue (avoid high fat), pregnancy, thyroid concerns"></textarea>
+        <div class="hint">The AI will use these to adjust ingredient choices and macro guidelines.</div>
+      </div>
+    </div>
+  </div>
+</details>
+
+        <details class="card" open>
           <summary>
             Likes: ingredients, cuisines, flavors
             <span class="summary-right">favorites • cuisines • flavor profile</span>
@@ -899,6 +929,10 @@
         avoid_ingredients: chips.avoid.get(),
         hard_nos: chips.hardno.get()
       },
+      health: {
+        conditions: readCheckedValues("health_conditions"),
+        notes: cleanToken(qs("health_notes").value)
+      },
       likes: {
         favorite_ingredients: chips.favorites.get(),
         cuisines_like: chips.cuisines_like.get(),
@@ -984,6 +1018,10 @@
     chips.allergies.set(profile?.diet?.allergies ?? []);
     chips.avoid.set(profile?.diet?.avoid_ingredients ?? []);
     chips.hardno.set(profile?.diet?.hard_nos ?? []);
+
+    // Health
+    setCheckedValues("health_conditions", profile?.health?.conditions ?? []);
+    qs("health_notes").value = profile?.health?.notes ?? "";
 
     // Likes
     chips.favorites.set(profile?.likes?.favorite_ingredients ?? []);
