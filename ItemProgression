@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Wave Necromancer - Gear Tier Progression</title>
+    <style>
+        :root {
+            --bg-color: #0c0d10;
+            --card-bg: #14161d;
+            --card-border: #232733;
+            --text-main: #e1e3e8;
+            --text-muted: #94a3b8;
+            --accent-blood: #ef4444;
+            --accent-orange: #f97316;
+            --accent-purple: #a855f7;
+            --accent-blue: #38bdf8;
+            --accent-gold: #eab308;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: var(--accent-blood);
+            text-align: center;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Slot Progression Row Layout */
+        .slot-group {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .slot-title {
+            color: var(--accent-orange);
+            font-size: 1.25rem;
+            font-weight: bold;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .tiers-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        @media (max-width: 1024px) {
+            .tiers-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .tiers-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tier-card {
+            background-color: #181b24;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .tier-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            border-bottom: 1px dashed var(--card-border);
+            padding-bottom: 6px;
+        }
+
+        .tier-name {
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .tier-starter { background-color: #1e293b; color: var(--accent-blue); }
+        .tier-midgame { background-color: #1e293b; color: #38bdf8; }
+        .tier-endgame { background-color: #2e1065; color: var(--accent-purple); }
+        .tier-push { background-color: #450a0a; color: var(--accent-blood); }
+
+        .item-aspect {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: var(--accent-orange);
+        }
+
+        .item-aspect.unique {
+            color: var(--accent-purple);
+        }
+
+        .item-aspect.mythic {
+            color: var(--accent-purple);
+        }
+
+        ol {
+            padding-left: 18px;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            margin-top: 6px;
+        }
+
+        li {
+            margin-bottom: 2px;
+        }
+
+        .temper {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            padding-top: 4px;
+            border-top: 1px dashed var(--card-border);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Blood Wave Necromancer - Slot Tier Progression</h1>
+
+    <!-- Helm Slot -->
+    <div class="slot-group">
+        <div class="slot-title">Helm</div>
+        <div class="tiers-grid">
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-starter">Starter</span>
+                    <span class="item-aspect">Hardened Bones</span>
+                </div>
+                <ol>
+                    <li>Essence Regeneration</li>
+                    <li>Resource Cost Reduction</li>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Intelligence</li>
+                    <li>Resistance to All Elements</li>
+                </ol>
+                <div class="temper">⚔ Maximum Life</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-midgame">Midgame</span>
+                    <span class="item-aspect unique">Leoric's Crown</span>
+                </div>
+                <ol>
+                    <li>Attack Speed</li>
+                    <li>Essence Regeneration</li>
+                    <li>Resource Cost Reduction</li>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Intelligence</li>
+                    <li>Resistance to All Elements</li>
+                    <li>Unique Effect</li>
+                </ol>
+                <div class="temper">⚔ Maximum Life</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-endgame">Endgame</span>
+                    <span class="item-aspect unique">Leoric's Crown</span>
+                </div>
+                <ol>
+                    <li>Attack Speed</li>
+                    <li>Essence Regeneration</li>
+                    <li>Resource Cost Reduction</li>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Intelligence</li>
+                    <li>Resistance to All Elements</li>
+                    <li>Unique Effect</li>
+                </ol>
+                <div class="temper">⚔ Maximum Life</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-push">Push</span>
+                    <span class="item-aspect unique">Leoric's Crown</span>
+                </div>
+                <ol>
+                    <li>Attack Speed</li>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Intelligence</li>
+                    <li>Resistance to All Elements</li>
+                    <li>Unique Effect</li>
+                    <li>Physical Damage</li>
+                </ol>
+                <div class="temper">⚔ Maximum Resolve Stacks</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chest Armor Slot -->
+    <div class="slot-group">
+        <div class="slot-title">Chest Armor</div>
+        <div class="tiers-grid">
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-starter">Starter</span>
+                    <span class="item-aspect">Juggernaut's</span>
+                </div>
+                <ol>
+                    <li>Essence Regeneration</li>
+                    <li>Resource Cost Reduction</li>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Intelligence</li>
+                    <li>Resistance to All Elements</li>
+                </ol>
+                <div class="temper">⚔ Maximum Life</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-midgame">Midgame</span>
+                    <span class="item-aspect">Juggernaut's</span>
+                </div>
+                <ol>
+                    <li>Essence Regeneration</li>
+                    <li>Resource Cost Reduction</li>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Intelligence</li>
+                    <li>Resistance to All Elements</li>
+                </ol>
+                <div class="temper">⚔ Maximum Life</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-endgame">Endgame</span>
+                    <span class="item-aspect">Juggernaut's</span>
+                </div>
+                <ol>
+                    <li>Essence Regeneration</li>
+                    <li>Resource Cost Reduction</li>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Intelligence</li>
+                    <li>Resistance to All Elements</li>
+                </ol>
+                <div class="temper">⚔ Maximum Life</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-push">Push</span>
+                    <span class="item-aspect">Glynn's Anvil</span>
+                </div>
+                <ol>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Intelligence</li>
+                    <li>Resistance to All Elements</li>
+                    <li>Physical Damage</li>
+                </ol>
+                <div class="temper">⚔ Maximum Resolve Stacks</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gloves Slot -->
+    <div class="slot-group">
+        <div class="slot-title">Gloves</div>
+        <div class="tiers-grid">
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-starter">Starter</span>
+                    <span class="item-aspect">Rathma's Chosen</span>
+                </div>
+                <ol>
+                    <li>Intelligence</li>
+                    <li>Maximum Life</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Attack Speed</li>
+                </ol>
+                <div class="temper">⚔ Damage Per Overpower Stack</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-midgame">Midgame</span>
+                    <span class="item-aspect">Thickened Blood</span>
+                </div>
+                <ol>
+                    <li>x50% Critical Strike Damage Multiplier</li>
+                    <li>x28% Vulnerable Damage Multiplier</li>
+                    <li>x24% Physical Damage Multiplier</li>
+                    <li>Critical Strike Chance</li>
+                </ol>
+                <div class="temper">⚔ Damage Per Overpower Stack</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-endgame">Endgame</span>
+                    <span class="item-aspect">Thickened Blood</span>
+                </div>
+                <ol>
+                    <li>x50% Critical Strike Damage Multiplier</li>
+                    <li>x28% Vulnerable Damage Multiplier</li>
+                    <li>x24% Physical Damage Multiplier</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Attack Speed</li>
+                    <li>Intelligence</li>
+                </ol>
+                <div class="temper">⚔ Damage Per Overpower Stack</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-push">Push</span>
+                    <span class="item-aspect">Thickened Blood</span>
+                </div>
+                <ol>
+                    <li>x50% Critical Strike Damage Multiplier</li>
+                    <li>x28% Vulnerable Damage Multiplier</li>
+                    <li>x24% Physical Damage Multiplier</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Physical Damage</li>
+                </ol>
+                <div class="temper">⚔ Damage Per Overpower Stack</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pants Slot -->
+    <div class="slot-group">
+        <div class="slot-title">Pants</div>
+        <div class="tiers-grid">
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-starter">Starter</span>
+                    <span class="item-aspect unique">Kessime's Legacy</span>
+                </div>
+                <ol>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Intelligence</li>
+                    <li>Cooldown Reduction</li>
+                    <li>Unique Effect</li>
+                </ol>
+                <div class="temper">⚔ Maximum Life</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-midgame">Midgame</span>
+                    <span class="item-aspect unique">Kessime's Legacy</span>
+                </div>
+                <ol>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Intelligence</li>
+                    <li>Cooldown Reduction</li>
+                    <li>Unique Effect</li>
+                </ol>
+                <div class="temper">⚔ Maximum Life</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-endgame">Endgame</span>
+                    <span class="item-aspect unique">Kessime's Legacy</span>
+                </div>
+                <ol>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Intelligence</li>
+                    <li>Resistance to All Elements</li>
+                    <li>Unique Effect</li>
+                </ol>
+                <div class="temper">⚔ Maximum Life</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-push">Push</span>
+                    <span class="item-aspect unique">Kessime's Legacy</span>
+                </div>
+                <ol>
+                    <li>Maximum Life</li>
+                    <li>Intelligence</li>
+                    <li>Armor</li>
+                    <li>Resistance to All Elements</li>
+                    <li>Unique Effect</li>
+                    <li>Physical Damage</li>
+                </ol>
+                <div class="temper">⚔ Maximum Life</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Boots Slot -->
+    <div class="slot-group">
+        <div class="slot-title">Boots</div>
+        <div class="tiers-grid">
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-starter">Starter</span>
+                    <span class="item-aspect">Tidal</span>
+                </div>
+                <ol>
+                    <li>Essence Regeneration</li>
+                    <li>Intelligence</li>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Movement Speed</li>
+                </ol>
+                <div class="temper">⚔ Movement Speed</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-midgame">Midgame</span>
+                    <span class="item-aspect">Tidal</span>
+                </div>
+                <ol>
+                    <li>Essence Regeneration</li>
+                    <li>Intelligence</li>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Movement Speed</li>
+                </ol>
+                <div class="temper">⚔ Movement Speed</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-endgame">Endgame</span>
+                    <span class="item-aspect">Embattled</span>
+                </div>
+                <ol>
+                    <li>Essence Regeneration</li>
+                    <li>Intelligence</li>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Movement Speed</li>
+                </ol>
+                <div class="temper">⚔ Movement Speed</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-push">Push</span>
+                    <span class="item-aspect">Tidal</span>
+                </div>
+                <ol>
+                    <li>Intelligence</li>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Movement Speed</li>
+                    <li>Physical Damage</li>
+                </ol>
+                <div class="temper">⚔ Movement Speed</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Amulet Slot -->
+    <div class="slot-group">
+        <div class="slot-title">Amulet</div>
+        <div class="tiers-grid">
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-starter">Starter</span>
+                    <span class="item-aspect">Thickened Blood</span>
+                </div>
+                <ol>
+                    <li>Intelligence</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Attack Speed</li>
+                    <li>Movement Speed</li>
+                </ol>
+                <div class="temper">⚔ 15% Chance to Restore +12 Primary Resource</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-midgame">Midgame</span>
+                    <span class="item-aspect unique">Banished Lord's Talisman</span>
+                </div>
+                <ol>
+                    <li>x50% Critical Strike Damage Multiplier</li>
+                    <li>x28% Vulnerable Damage Multiplier</li>
+                    <li>Intelligence</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Ranks to Blood Skills</li>
+                    <li>Unique Effect</li>
+                </ol>
+                <div class="temper">⚔ 15% Chance to Restore +12 Primary Resource</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-endgame">Endgame</span>
+                    <span class="item-aspect unique">Banished Lord's Talisman</span>
+                </div>
+                <ol>
+                    <li>x50% Critical Strike Damage Multiplier</li>
+                    <li>x28% Vulnerable Damage Multiplier</li>
+                    <li>Intelligence</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Ranks to Blood Skills</li>
+                    <li>Physical Damage</li>
+                    <li>Unique Effect</li>
+                </ol>
+                <div class="temper">⚔ 15% Chance to Restore +12 Primary Resource</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-push">Push</span>
+                    <span class="item-aspect">Blood-Mad Idol</span>
+                </div>
+                <ol>
+                    <li>Attack Speed</li>
+                    <li>x50% Critical Strike Damage Multiplier</li>
+                    <li>x28% Vulnerable Damage Multiplier</li>
+                    <li>x24% Physical Damage Multiplier</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Ranks to Blood Skills</li>
+                    <li>Unique Effect</li>
+                    <li>Physical Damage</li>
+                </ol>
+                <div class="temper">⚔ Maximum Life</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Left Ring Slot -->
+    <div class="slot-group">
+        <div class="slot-title">Left Ring</div>
+        <div class="tiers-grid">
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-starter">Starter</span>
+                    <span class="item-aspect">Deluge</span>
+                </div>
+                <ol>
+                    <li>Intelligence</li>
+                    <li>Maximum Life</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Attack Speed</li>
+                </ol>
+                <div class="temper">⚔ 15% Chance to Restore +12 Primary Resource</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-midgame">Midgame</span>
+                    <span class="item-aspect">Tides Blood</span>
+                </div>
+                <ol>
+                    <li>x25% Critical Strike Damage Multiplier</li>
+                    <li>x14% Vulnerable Damage Multiplier</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Attack Speed</li>
+                </ol>
+                <div class="temper">⚔ 15% Chance to Restore +12 Primary Resource</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-endgame">Endgame</span>
+                    <span class="item-aspect">Tides Blood</span>
+                </div>
+                <ol>
+                    <li>x25% Critical Strike Damage Multiplier</li>
+                    <li>x14% Vulnerable Damage Multiplier</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Attack Speed</li>
+                    <li>Intelligence</li>
+                </ol>
+                <div class="temper">⚔ 15% Chance to Restore +12 Primary Resource</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-push">Push</span>
+                    <span class="item-aspect">Redirected Force</span>
+                </div>
+                <ol>
+                    <li>x25% Critical Strike Damage Multiplier</li>
+                    <li>x14% Vulnerable Damage Multiplier</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Attack Speed</li>
+                    <li>Physical Damage</li>
+                </ol>
+                <div class="temper">⚔ 15% Chance to Restore +12 Primary Resource</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Ring Slot -->
+    <div class="slot-group">
+        <div class="slot-title">Right Ring</div>
+        <div class="tiers-grid">
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-starter">Starter</span>
+                    <span class="item-aspect">Tides Blood</span>
+                </div>
+                <ol>
+                    <li>Intelligence</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Resource Cost Reduction</li>
+                    <li>Maximum Life</li>
+                </ol>
+                <div class="temper">⚔ 15% Chance to Restore +12 Primary Resource</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-midgame">Midgame</span>
+                    <span class="item-aspect">Deluge</span>
+                </div>
+                <ol>
+                    <li>x14% Vulnerable Damage Multiplier</li>
+                    <li>Resource Cost Reduction</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Attack Speed</li>
+                </ol>
+                <div class="temper">⚔ 15% Chance to Restore +12 Primary Resource</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-endgame">Endgame</span>
+                    <span class="item-aspect mythic">Ring of Starless Skies</span>
+                </div>
+                <ol>
+                    <li>Attack Speed</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Intelligence</li>
+                    <li>x25% Critical Strike Damage Multiplier</li>
+                    <li>Unique Effect</li>
+                </ol>
+                <div class="temper">⚔ 15% Chance to Restore +12 Primary Resource</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-push">Push</span>
+                    <span class="item-aspect mythic">Ring of Starless Skies</span>
+                </div>
+                <ol>
+                    <li>x25% Critical Strike Damage Multiplier</li>
+                    <li>x14% Vulnerable Damage Multiplier</li>
+                    <li>Attack Speed</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Unique Effect</li>
+                </ol>
+                <div class="temper">⚔ 15% Chance to Restore +12 Primary Resource</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mainhand Slot -->
+    <div class="slot-group">
+        <div class="slot-title">Mainhand</div>
+        <div class="tiers-grid">
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-starter">Starter</span>
+                    <span class="item-aspect">Crushing</span>
+                </div>
+                <ol>
+                    <li>Weapon Damage</li>
+                    <li>x25% Critical Strike Damage Multiplier</li>
+                    <li>Maximum Life</li>
+                    <li>Intelligence</li>
+                </ol>
+                <div class="temper">⚔ Critical Strike Chance</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-midgame">Midgame</span>
+                    <span class="item-aspect">Crushing</span>
+                </div>
+                <ol>
+                    <li>Weapon Damage</li>
+                    <li>x25% Critical Strike Damage Multiplier</li>
+                    <li>Maximum Life</li>
+                    <li>Intelligence</li>
+                </ol>
+                <div class="temper">⚔ Critical Strike Chance</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-endgame">Endgame</span>
+                    <span class="item-aspect">Crushing</span>
+                </div>
+                <ol>
+                    <li>Weapon Damage</li>
+                    <li>x25% Critical Strike Damage Multiplier</li>
+                    <li>Maximum Life</li>
+                    <li>Intelligence</li>
+                </ol>
+                <div class="temper">⚔ Critical Strike Chance</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-push">Push</span>
+                    <span class="item-aspect">Untimely Death</span>
+                </div>
+                <ol>
+                    <li>Weapon Damage</li>
+                    <li>x25% Critical Strike Damage Multiplier</li>
+                    <li>Maximum Life</li>
+                    <li>Intelligence</li>
+                    <li>Physical Damage</li>
+                </ol>
+                <div class="temper">⚔ Critical Strike Chance</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Offhand Slot -->
+    <div class="slot-group">
+        <div class="slot-title">Offhand</div>
+        <div class="tiers-grid">
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-starter">Starter</span>
+                    <span class="item-aspect">Coalesced Blood</span>
+                </div>
+                <ol>
+                    <li>Damage Reduction</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Intelligence</li>
+                    <li>Armor</li>
+                </ol>
+                <div class="temper">⚔ Critical Strike Chance</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-midgame">Midgame</span>
+                    <span class="item-aspect">Coalesced Blood</span>
+                </div>
+                <ol>
+                    <li>Damage Reduction</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Intelligence</li>
+                    <li>Armor</li>
+                </ol>
+                <div class="temper">⚔ Critical Strike Chance</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-endgame">Endgame</span>
+                    <span class="item-aspect">Coalesced Blood</span>
+                </div>
+                <ol>
+                    <li>Damage Reduction</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Intelligence</li>
+                    <li>Armor</li>
+                </ol>
+                <div class="temper">⚔ Critical Strike Chance</div>
+            </div>
+            <div class="tier-card">
+                <div class="tier-header">
+                    <span class="tier-name tier-push">Push</span>
+                    <span class="item-aspect">Inner Calm</span>
+                </div>
+                <ol>
+                    <li>Damage Reduction</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Intelligence</li>
+                    <li>Armor</li>
+                </ol>
+                <div class="temper">⚔ Critical Strike Chance</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
