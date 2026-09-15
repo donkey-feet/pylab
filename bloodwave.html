@@ -1,1 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Necromancer Blood Wave Starter Build</title>
+    <style>
+        :root {
+            --bg-color: #0c0d10;
+            --card-bg: #14161d;
+            --card-border: #232733;
+            --text-main: #e1e3e8;
+            --text-muted: #94a3b8;
+            --accent-blood: #ef4444;
+            --accent-orange: #f97316;
+            --accent-blue: #38bdf8;
+            --accent-purple: #a855f7;
+            --accent-green: #22c55e;
+            --accent-gold: #eab308;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        h1 {
+            color: var(--accent-blood);
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            color: var(--accent-blood);
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 6px;
+            margin-bottom: 12px;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            color: var(--accent-orange);
+            margin-top: 12px;
+            margin-bottom: 6px;
+        }
+
+        .section {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        /* Highlight Colors */
+        .blood { color: var(--accent-blood); font-weight: 600; }
+        .orange { color: var(--accent-orange); font-weight: 600; }
+        .blue { color: var(--accent-blue); font-weight: 600; }
+        .purple { color: var(--accent-purple); font-weight: 600; }
+        .green { color: var(--accent-green); font-weight: 600; }
+        .gold { color: var(--accent-gold); font-weight: 600; }
+        .bold { font-weight: 600; }
+
+        /* Lists & Requirements */
+        ul, ol {
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .req-box {
+            background-color: #101216;
+            border-left: 4px solid var(--accent-blood);
+            padding: 12px 16px;
+            margin-top: 14px;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .req-box ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        /* Image Containers */
+        .img-container {
+            width: 100%;
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .img-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            border: 1px solid var(--card-border);
+        }
+
+        /* Equipment Grid */
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .equip-card {
+            background: #181b24;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            padding: 14px;
+        }
+
+        .equip-card .slot {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .equip-card .item-name {
+            font-size: 1.1rem;
+            color: var(--accent-orange);
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .equip-card ol {
+            padding-left: 18px;
+            font-size: 0.95rem;
+            gap: 2px;
+        }
+
+        .equip-card .temper-stat {
+            font-size: 0.9rem;
+            color: #a1a1aa;
+            margin-top: 6px;
+            list-style-type: none;
+        }
+
+        /* Specific Item Showcase Cards (Rings & Amulet) */
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Necromancer Blood Wave Starter Build</h1>
+
+    <!-- Starter Gear & Notes Section -->
+    <div class="section">
+        <h2>Starter Gear & Notes</h2>
+        <ul>
+            <li>Early on in your progression, focus on stacking <span class="bold">Maximum Life</span> to survive and <span class="bold">essence regeneration</span>, <span class="bold">resource cost reduction</span> to manage resources.</li>
+            <li>Having essence regeneration, resource cost reduction on your gear pieces is very important for this build to function properly.</li>
+            <li>Gamble pants to acquire <span class="orange">Kessime's Legacy</span>. They also drop from Andariel's.</li>
+            <li>Once you get a good <span class="orange">Kessime's Legacy</span>, the true power of the build will be revealed! <span class="orange">Kessime's Legacy</span> doubles your damage by creating two waves per cast from both sides, also automates pulling monsters in.</li>
+            <li><span class="blue">Juggernaut's Aspect</span> is imprinted on chest. This is one of the aspects that gives the most toughness, and it is up by default without having to activate via any skill rotation.</li>
+            <li><span class="blue">Aspect of Hardened Bones</span> on helmet for additional damage reduction and corpse generation.</li>
+            <li><span class="purple">Tidal Aspect</span> is imprinted on boots to increase OP stacks, later on when you get <span class="orange">Red Blessing</span>, extra OP stacks increases your damage.</li>
+            <li>Early on resource management can be an issue since <span class="blood">Blood Wave</span> as a core skill is very resource hungry. <span class="green">Aspect of Deluge</span> will mostly solve your early on resource issues. This aspect is very important to be able to smoothly play this build.</li>
+            <li><span class="purple">Gar</span> generates additional critical strike chance, and <span class="purple">Teb</span> automates <span class="gold">Iron Maiden</span> application.</li>
+        </ul>
+
+        <div class="req-box">
+            <h3 style="margin-top:0;">Stat Requirements for a Smooth Experience:</h3>
+            <ul>
+                <li>• <span class="bold">3x Tempers</span> of "Lucky Hit Chance: Restore Resource" on your jewelry.</li>
+                <li>• <span class="bold">10 - 12</span> Essence Regeneration.</li>
+                <li>• <span class="bold">>18%</span> Resource Cost Reduction.</li>
+                <li>• <span class="bold">>50%</span> Attack speed with ferocity stacks. You get a lot of Cap 2 attack speed from <span class="blood">Bone Prison</span> in this build.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Skill Rotation Section -->
+    <div class="section">
+        <h2>Skill Rotation</h2>
+        <ul>
+            <li>You can literally play this build just pressing <span class="blood">Blood Wave</span> and nothing else. But there are few keys thing you can do to improve your rotation especially for teleporting and speed.</li>
+            <li>Use <span class="blue">Sever</span> to teleport near monsters. It also generates a corpse, you also consume corpses via <span class="blood">Blood Mist</span> to activate Flesh Eater legendary node but also continue teleporting via <span class="blood">Blood Rush</span>.</li>
+            <li>Cast <span class="blue">Blood Lance</span> from range to consume OP stacks via <span class="gold">Overpower</span>. When as you cast <span class="blood">Blood Wave</span> via <span class="gold">Overpower</span> modifier you get OP stacks back. In order to "gain" OP stacks, you need to spend some first if you are at the max capacity. This activates multipliers from Bloodbath Legendary node and the Dominate glyph.</li>
+            <li>Main rotation is just teleport teleport! And spam <span class="blood">Blood Wave</span>.</li>
+            <li>Cast <span class="blood">Bone Prison</span> to gain extra attack speed. You may not even need to since Blood Wave when fully locked in one shots most T12 stuff but if you are fighting tankier targets and they are able to survive your multiple hits, Bone Prison increases your DPS significantly.</li>
+            <li>Orbs are automatically consumed by <span class="blood">Iron Maiden</span> and you don't even have to manually cast this as this is automated by <span class="purple">Teb</span> rune. <span class="blood">Iron Maiden</span> applies vulnerable.</li>
+            <li>Occasionally, weave in <span class="blood">Reap</span> to get essence back if your resources are depleted.</li>
+            <li>Pull is also automated <span class="blood">Blood Wave</span> combined with <span class="orange">Kessime's Legacy</span>. Enjoy true one button playstyle!</li>
+        </ul>
+
+        <h3>Teleport Rotation</h3>
+        <ul>
+            <li>Spam <span class="blue">Sever</span> to teleport around, it ports you to a targeted location and creates a corpse.</li>
+            <li><span class="blood">Blood Mist</span> consumes that corpse and also teleports you. So you rotate between these two skills as <span class="blood">Blood Mist</span> comes off cooldown.</li>
+        </ul>
+    </div>
+
+    <!-- Equipment Stat Priority Grid -->
+    <div class="section">
+        <h2>Equipment Stat Priority</h2>
+        
+        <div class="equipment-grid">
+            <div class="equip-card">
+                <div class="slot">Helm</div>
+                <div class="item-name">Hardened Bones</div>
+                <ol>
+                    <li>Essence Regeneration</li>
+                    <li>Resource Cost Reduction</li>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Intelligence</li>
+                    <li>Resistance to All Elements</li>
+                </ol>
+                <div class="temper-stat">⚔ Maximum Life</div>
+            </div>
+
+            <div class="equip-card">
+                <div class="slot">Chest Armor</div>
+                <div class="item-name">Juggernaut's</div>
+                <ol>
+                    <li>Essence Regeneration</li>
+                    <li>Resource Cost Reduction</li>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Intelligence</li>
+                    <li>Resistance to All Elements</li>
+                </ol>
+                <div class="temper-stat">⚔ Maximum Life</div>
+            </div>
+
+            <div class="equip-card">
+                <div class="slot">Gloves</div>
+                <div class="item-name">Rathma's Chosen</div>
+                <ol>
+                    <li>Intelligence</li>
+                    <li>Maximum Life</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Attack Speed</li>
+                </ol>
+                <div class="temper-stat">⚔ Damage Per Overpower Stack</div>
+            </div>
+
+            <div class="equip-card">
+                <div class="slot">Pants</div>
+                <div class="item-name">Kessime's Legacy</div>
+                <ol>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Intelligence</li>
+                    <li>Cooldown Reduction</li>
+                    <li>Unique Effect</li>
+                </ol>
+                <div class="temper-stat">⚔ Maximum Life</div>
+            </div>
+
+            <div class="equip-card">
+                <div class="slot">Boots</div>
+                <div class="item-name">Tidal</div>
+                <ol>
+                    <li>Essence Regeneration</li>
+                    <li>Intelligence</li>
+                    <li>Maximum Life</li>
+                    <li>Armor</li>
+                    <li>Movement Speed</li>
+                </ol>
+                <div class="temper-stat">⚔ Movement Speed</div>
+            </div>
+
+            <div class="equip-card">
+                <div class="slot">Amulet</div>
+                <div class="item-name">Thickened Blood</div>
+                <ol>
+                    <li>Intelligence</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Attack Speed</li>
+                    <li>Movement Speed</li>
+                </ol>
+                <div class="temper-stat">⚔ 15% Chance to Restore +12 Primary Resource</div>
+            </div>
+
+            <div class="equip-card">
+                <div class="slot">Left Ring</div>
+                <div class="item-name">Deluge</div>
+                <ol>
+                    <li>Intelligence</li>
+                    <li>Maximum Life</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Attack Speed</li>
+                </ol>
+                <div class="temper-stat">⚔ 15% Chance to Restore +12 Primary Resource</div>
+            </div>
+
+            <div class="equip-card">
+                <div class="slot">Right Ring</div>
+                <div class="item-name">Tides Blood</div>
+                <ol>
+                    <li>Intelligence</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Resource Cost Reduction</li>
+                    <li>Maximum Life</li>
+                </ol>
+                <div class="temper-stat">⚔ 15% Chance to Restore +12 Primary Resource</div>
+            </div>
+
+            <div class="equip-card">
+                <div class="slot">Mainhand</div>
+                <div class="item-name">Crushing</div>
+                <ol>
+                    <li>Weapon Damage</li>
+                    <li>x25% Critical Strike Damage Multiplier</li>
+                    <li>Maximum Life</li>
+                    <li>Intelligence</li>
+                </ol>
+                <div class="temper-stat">⚔ Critical Strike Chance</div>
+            </div>
+
+            <div class="equip-card">
+                <div class="slot">Offhand</div>
+                <div class="item-name">Coalesced Blood</div>
+                <ol>
+                    <li>Damage Reduction</li>
+                    <li>Critical Strike Chance</li>
+                    <li>Intelligence</li>
+                    <li>Armor</li>
+                </ol>
+                <div class="temper-stat">⚔ Critical Strike Chance</div>
+            </div>
+
+            <div class="equip-card">
+                <div class="slot">Seal & Charms</div>
+                <div class="item-name">Charms Setup</div>
+                <ul style="list-style-type:none; padding-left:0; font-size: 0.95rem;">
+                    <li><strong>Seal:</strong> Maximum Life, +1 Charm Slot</li>
+                    <li><strong>Charm 1:</strong> Ranks to Blood Skills</li>
+                    <li><strong>Charm 4:</strong> Ranks to Blood Skills</li>
+                    <li><strong>Charm 5:</strong> Ranks to Blood Skills</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="img-container">
+            <img src="BWNStarterEquipment.png" alt="Starter Equipment Layout">
+        </div>
+    </div>
+
+    <!-- Featured Jewelry Examples -->
+    <div class="section">
+        <h2>Starter Jewelry Examples</h2>
+        <div class="showcase-grid">
+            <div class="img-container">
+                <img src="BWNStarterAmulet.jpg" alt="Thickened Blood Amulet Showcase">
+            </div>
+            <div class="img-container">
+                <img src="BWNStarterRing1.jpg" alt="Deluge Soulwatch Hoop Showcase">
+            </div>
+            <div class="img-container">
+                <img src="BWNStarterRing2.jpg" alt="Tides of Blood Soulwatch Hoop Showcase">
+            </div>
+        </div>
+    </div>
+
+    <!-- Mercenary Setup -->
+    <div class="section">
+        <h2>Mercenary Setup</h2>
+        <p><strong>Hired:</strong> Aldkin</p>
+        <p><strong>Reinforcement:</strong> Raheir</p>
+        <div class="img-container">
+            <img src="BWNStarterMercenary.png" alt="Mercenary Tree Setup">
+        </div>
+    </div>
+
+    <!-- Skill Tree -->
+    <div class="section">
+        <h2>Skill Tree</h2>
+        <div class="img-container">
+            <img src="BWNStarterSkillTree.jpg" alt="Skill Tree Allocation">
+        </div>
+    </div>
+
+    <!-- Paragon Boards -->
+    <div class="section">
+        <h2>Paragon Boards</h2>
+        <ol style="margin-bottom: 12px;">
+            <li>Start / Corporeal</li>
+            <li>Bloodbath / Gravekeeper</li>
+            <li>Flesh-eater / Essence</li>
+            <li>Scent of Death / Imbibe</li>
+            <li>Frailty / Dominate</li>
+        </ol>
+        <div class="img-container">
+            <img src="BWNStarterParagon.jpg" alt="Paragon Boards Layout">
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
