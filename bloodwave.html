@@ -164,6 +164,36 @@
             gap: 16px;
             margin-top: 16px;
         }
+        
+        /* Enables smooth zoom on hover for detailed images */
+        .zoom-img {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: zoom-in;
+        }
+
+        .zoom-img:hover {
+            transform: scale(1.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            z-index: 10;
+            position: relative;
+        }
+
+        /* Button for opening high-res full image */
+        .view-btn {
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 6px 12px;
+            background-color: var(--accent-blood);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .view-btn:hover {
+            background-color: #dc2626;
+        }
     </style>
 </head>
 <body>
@@ -396,14 +426,17 @@
     <!-- Skill Tree -->
     <div class="section">
         <h2>Skill Tree</h2>
-        <div class="img-container">
-            <img src="BWNStarterSkillTree.png" alt="Skill Tree Allocation">
+        <a href="BWNStarterSkillTree.png" target="_blank" class="view-btn">🔍 View Full Resolution Image</a>
+        <div class="img-container" style="overflow: visible;">
+            <img src="BWNStarterSkillTree.png" alt="Skill Tree Allocation" class="zoom-img">
         </div>
     </div>
 
     <!-- Paragon Boards -->
+    <!-- Paragon Boards -->
     <div class="section">
         <h2>Paragon Boards</h2>
+        <a href="BWNStarterParagon.png" target="_blank" class="view-btn">🔍 View Full Resolution Image</a>
         <ol style="margin-bottom: 12px;">
             <li>Start / Corporeal</li>
             <li>Bloodbath / Gravekeeper</li>
@@ -411,8 +444,8 @@
             <li>Scent of Death / Imbibe</li>
             <li>Frailty / Dominate</li>
         </ol>
-        <div class="img-container">
-            <img src="BWNStarterParagon.png" alt="Paragon Boards Layout">
+        <div class="img-container" style="overflow: visible;">
+            <img src="BWNStarterParagon.png" alt="Paragon Boards Layout" class="zoom-img">
         </div>
     </div>
 
