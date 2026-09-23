@@ -369,8 +369,10 @@ const STAT_NAME_PATTERNS = [
   [/Attack_Speed/i, "Attack Speed"],
   [/Weapon_Damage/i, "Weapon Damage"],
   [/Cooldown_Reduction/i, "Cooldown Reduction"],
+  [/Proc_Resource_On_Hit|Proc.*Resource|LuckyHit.*Resource/i, "Lucky Hit: Chance to Restore Resource"],
   [/Lucky_Hit/i, "Lucky Hit Chance"],
   [/Damage_Reduction/i, "Damage Reduction"],
+  [/Overpower.*Per_Stack|Overpower_Damage_Bonus_Per_Stack/i, "Damage per Overpower Stack"],
   [/Overpower/i, "Overpower Damage"],
   [/Vulnerable/i, "Vulnerable Damage"],
   [/Block_Chance/i, "Block Chance"],
@@ -391,32 +393,76 @@ function humanizeAttributeName(attrName) {
     .trim();
 }
 
+// Extracts the "hint" a template's {valueN} token stands for (a damage type, resource type, or
+// skill category) - the game's own tooltip text uses this same token for these, but the actual
+// element/resource/category name is only encoded in the affix's own string code, not the template.
+function codeHint(code) {
+  const damageType = code.match(/(NonPhysical|Poison|Cold|Fire|Lightning|Shadow|Physical)/i);
+  if (damageType) return damageType[1].replace(/^Non/i, "Non-");
+  const resource = code.match(/_(Essence|Fury|Mana|Wrath|Spirit)\b/i);
+  if (resource) return resource[1];
+  const category = code.match(/_Category_(\w+)/i);
+  if (category) return category[1];
+  return "";
+}
+
+// Parses a locale description template (affix-level `desc` or attribute-level attributeDescriptions
+// entry) into a clean stat label: strips numeric value brackets (e.g. "+[{value}*100|%|]") and
+// color/markup tags (e.g. "{c_important}...{/c}"), keeps the surrounding plain-language text intact,
+// and fills in "{valueN}" name placeholders using codeHint(). Also drops a leading "Set Name:" line
+// some set-bonus descriptions have, keeping only the actual effect text.
+function parseDescriptionTemplate(template, code) {
+  if (!template) return null;
+  const segments = template.split(/\r?\n/).filter(Boolean);
+  let text = segments[segments.length - 1];
+  const colonIdx = text.lastIndexOf(":");
+  if (colonIdx >= 0 && colonIdx < text.length - 1) text = text.slice(colonIdx + 1);
+  // strip markup tags first, so a bracket expression hidden behind a leading tag (e.g.
+  // "+{c_number}[...]{/c}") is fully removed by the bracket-stripping pass below.
+  text = text.replace(/\{\/?c[^}]*\}/g, "");
+  text = text.replace(/[+x]?\[[^\]]*\]/gi, "");
+  if (/\{value\d*\}/.test(text)) text = text.replace(/\{value\d*\}/g, codeHint(code));
+  text = text.replace(/^[+x]\s*/i, "");
+  text = text.replace(/\s+/g, " ").trim();
+  // "+3 to Blood Skills" reads fine with the number; without it "to Blood Skills" needs the
+  // implied word restored for clarity.
+  if (/^to \w+ Skills$/i.test(text)) text = `Ranks ${text}`;
+  return text || null;
+}
+
 function affixDisplayLabel(code) {
   if (AFFIX_CODE_OVERRIDES[code]) return AFFIX_CODE_OVERRIDES[code];
 
   const def = gd.affixes[code];
   const attr = def && (def.attributes || [])[0];
-  let base =
-    attr && attr.id != null && gd.attributes[attr.id]
-      ? humanizeAttributeName(gd.attributes[attr.id].name)
-      : humanizeAffixCode(code);
+  const attrName = attr && attr.id != null && gd.attributes[attr.id] && gd.attributes[attr.id].name;
 
-  // Resistance/Skill-Rank attributes are generic ("Resistance", "Skill_Rank_Skill_Tag_Bonus") -
-  // the specific element/skill-category they apply to is only encoded in the affix code itself.
+  // Prefer the game's own tooltip text: check the affix's own desc first (covers one-off effects
+  // like set bonuses), then the generic per-attribute template, before falling back to guessing
+  // a name from the internal attribute/code strings.
+  const fromAffixDesc = parseDescriptionTemplate(locale.affixes[code] && locale.affixes[code].desc, code);
+  if (fromAffixDesc) return fromAffixDesc;
+  const fromAttrTemplate = attrName && parseDescriptionTemplate(locale.attributeDescriptions[attrName], code);
+  if (fromAttrTemplate) return fromAttrTemplate;
+
+  let base = attrName ? humanizeAttributeName(attrName) : humanizeAffixCode(code);
   const element = code.match(/(Poison|Cold|Fire|Lightning|Shadow|Physical)/i);
   if (element && /^Resistance/i.test(base)) base = `${element[1]} Resistance`;
   const category = code.match(/_Category_(\w+)/i);
-  if (category && /Skill Rank/i.test(base)) base = `Skill Ranks (${category[1]})`;
+  if (category && /Skill Rank/i.test(base)) base = `Ranks to ${category[1]} Skills`;
+  const resourceType = code.match(/_(Essence|Fury|Mana|Wrath|Spirit)\b/i);
+  if (resourceType && /^Resource (Generation|Cost Reduction)$/i.test(base)) {
+    base = `${resourceType[1]} ${base.replace(/^Resource /i, "")}`;
+  }
 
   return base;
 }
 
-// Charm/Seal affix codes don't map cleanly onto a single game attribute - list known ones directly.
+// Charm/Seal affix codes with no locale desc/template at all - list known ones directly.
 const AFFIX_CODE_OVERRIDES = {
-  Talisman_SealAffix_Normal_LifePercent: "Maximum Life",
   Talisman_SealAffix_AdditionalCharmSlot: "+1 Charm Slot",
   Talisman_Charm_CoreStats_All: "All Core Stats",
-  Talisman_SealAffix_Normal_Damage_All: "All Damage",
+  Talisman_SealAffix_Normal_Damage_All: "Damage",
 };
 
 function humanizeAffixCode(code) {
@@ -450,7 +496,7 @@ function resolveStatLine(entry, itemId) {
 
 function resolveEquipment(profile) {
   const slots = [];
-  for (const [, itemPoolIdx] of Object.entries(profile.items || {})) {
+  for (const [slotKeyStr, itemPoolIdx] of Object.entries(profile.items || {})) {
     const item = data.items[itemPoolIdx];
     if (!item) continue;
     const itemDef = gd.items[item.id];
@@ -463,9 +509,14 @@ function resolveEquipment(profile) {
     // rolled with - item.name/localeName("items", ...) is only meaningful for true uniques/mythics.
     const aspectName = aspectDef && (aspectDef.prefix || (aspectDef.suffix || "").replace(/^of\s+/i, ""));
     const name = aspectName || localeName("items", item.id) || fixMojibake(item.name) || item.id;
+    // The item instance itself carries `mythic: true` once upgraded from Unique to Mythic Unique
+    // (the item id/definition stays the same across Starter->Push, only this flag changes).
+    const rarityLabel = item.mythic ? "Mythic Unique" : /_Unique_/i.test(item.id) ? "Unique" : null;
     slots.push({
+      slotKey: Number(slotKeyStr),
       slot: slotType,
       name,
+      rarityLabel,
       power: item.power,
       aspect: aspectName ? `Aspect ${aspectName}` : null,
       // Matches Maxroll's own "Stat Priority" ordering (explicits in their rolled order),
@@ -475,6 +526,17 @@ function resolveEquipment(profile) {
       sockets: (item.sockets || []).map((s) => localeName("items", s)),
     });
   }
+  // Canonical equipment paperdoll order (Helm/Chest/Gloves/Pants/Boots/Amulet/Ring/Ring/Weapon/Offhand),
+  // driven by the real body-slot ids from gd.itemTypes[...].bodySlots rather than a hardcoded name list.
+  const slotOrder = [4, 5, 13, 14, 15, 18, 17, 16, 7, 6];
+  slots.sort((a, b) => {
+    const ai = slotOrder.indexOf(a.slotKey);
+    const bi = slotOrder.indexOf(b.slotKey);
+    if (ai === -1 && bi === -1) return a.slotKey - b.slotKey;
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
   return slots;
 }
 
@@ -613,7 +675,7 @@ function buildProfileView(profile, className, profileIndex) {
         .map(
           (e) => `
             <div class="gear-card">
-                <div class="row-slot">${escapeHtml(e.slot)}</div>
+                <div class="row-slot">${escapeHtml(e.slot)}${e.rarityLabel ? ` &middot; ${escapeHtml(e.rarityLabel)}` : ""}</div>
                 <div class="row-name item-name">${escapeHtml(e.name)}${e.power ? ` (${e.power})` : ""}</div>
                 <div class="row-stats">${
                   e.statPriority.length
