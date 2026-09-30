@@ -264,18 +264,15 @@
         }
 
         @media (max-width: 767px) {
-            /* Hide traditional table headers on mobile */
             thead {
                 display: none;
             }
 
-            /* Convert table elements to block/flex card components */
             table, tbody, tr, td {
                 display: block;
                 width: 100%;
             }
 
-            /* Individual rule card styling */
             tr.rule-row {
                 padding: 12px;
                 border-bottom: 1px solid var(--border-color);
@@ -292,7 +289,6 @@
                 border: none;
             }
 
-            /* Display Rule # and Action side-by-side in a header layout */
             td.rule-num {
                 display: inline-block;
                 width: auto;
@@ -306,9 +302,8 @@
                 width: auto;
             }
 
-            /* Add visual pseudo-labels to key attributes */
             td:nth-child(3)::before {
-                content: "Slot: ";
+                content: "Item Type: ";
                 color: #888;
                 font-size: 0.8rem;
                 text-transform: uppercase;
@@ -334,14 +329,12 @@
                 margin-bottom: 6px;
             }
 
-            /* Give rule criteria a distinct container box */
             td:nth-child(5) {
                 margin-top: 6px;
                 padding-top: 8px;
                 border-top: 1px dashed #333;
             }
 
-            /* Full width group headers */
             .group-header-row td {
                 padding: 12px;
             }
@@ -476,8 +469,7 @@ function generateBuildGearRows(templateType) {
         } else if (templateType === "midgame") {
             criteria = `
                 <ul>
-                    <li>Has Required Affix [Min: 1]</li>
-                    <li>Has Optional Affix [Min: 1]</li>
+                    <li>Has Required Affix [Min: 2]</li>
                     <li>Is Specific Unique [Build Match] - Only used for Unique items</li>
                 </ul>`;
         } else if (templateType === "endgame") {
