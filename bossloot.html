@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diablo 4 Unique Item Drop Reference Guide</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --border-color: #333333;
+            --accent-gold: #ffcc00;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .description {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 25px;
+        }
+
+        .controls-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .search-container {
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1rem;
+            background-color: #121212;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #fff;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-gold);
+        }
+
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: #888;
+            text-transform: uppercase;
+            margin-right: 5px;
+        }
+
+        .class-select {
+            background-color: #2a2a2a;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .class-select:focus {
+            border-color: var(--accent-gold);
+        }
+
+        .table-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #171717;
+            color: #888;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background-color: #252525;
+        }
+
+        .item-name {
+            font-weight: bold;
+            color: var(--accent-gold);
+            font-size: 0.95rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            font-weight: bold;
+        }
+
+        .badge-class { background-color: #2a2a2a; color: #e0e0e0; border: 1px solid #444; }
+
+        .counter {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-top: 15px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Diablo 4 Unique Drop Reference Guide</h1>
+    <p class="description">Alphabetical Reference Sheet for Boss Lairs, Season 15 Capstones, General Pool, and Cube Crafting</p>
+
+    <div class="controls-card">
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by Unique Name, Drop Source, Boss, or Class..." oninput="filterTable()">
+        </div>
+
+        <div class="filter-row">
+            <div class="filter-group">
+                <span class="filter-label">Filter Class:</span>
+                <select id="classSelect" class="class-select" onchange="filterTable()">
+                    <option value="all">All Classes</option>
+                    <option value="barbarian">Barbarian</option>
+                    <option value="druid">Druid</option>
+                    <option value="necromancer">Necromancer</option>
+                    <option value="rogue">Rogue</option>
+                    <option value="sorcerer">Sorcerer</option>
+                    <option value="spiritborn">Spiritborn</option>
+                    <option value="paladin">Paladin</option>
+                    <option value="warlock">Warlock</option>
+                    <option value="all classes">Universal / All Classes Only</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="counter" id="itemCount">Showing all items</div>
+    </div>
+
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Unique Item Name</th>
+                    <th>Class Match</th>
+                    <th>Primary Drop Source / Boss</th>
+                </tr>
+            </thead>
+            <tbody id="uniqueTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+const uniquesData = [
+    { name: "100,000 Steps", class: "Barbarian", source: "Echo of Varshan" },
+    { name: "Accord of the Wilds", class: "Druid", source: "Beast in the Ice" },
+    { name: "Ae'grom's Schism", class: "Warlock", source: "Echo of Varshan" },
+    { name: "Ahavarion, Spear of Lycander", class: "Druid, Sorcerer", source: "Belial / Any Lair Boss (Torment 1+)" },
+    { name: "Airidah's Inexorable Will", class: "Druid", source: "Beast in the Ice / Astaroth" },
+    { name: "Anathema of the Primes", class: "Warlock", source: "Andariel" },
+    { name: "Ancients' Oath", class: "Barbarian", source: "Beast in the Ice / Andariel" },
+    { name: "Andariel's Visage", class: "All Classes", source: "Belial / Any Lair Boss (Torment 1+)" },
+    { name: "Arcadia", class: "Paladin", source: "Bartuc" },
+    { name: "Argent Veil", class: "Paladin", source: "Andariel" },
+    { name: "Arioc's Needle", class: "Barbarian, Druid, Spiritborn", source: "Season 15 Capstones (Baal, Mephisto, Diablo) ~15%" },
+    { name: "Arreat's Bearing", class: "Barbarian", source: "Bartuc" },
+    { name: "Assassin's Stride", class: "Rogue", source: "Andariel" },
+    { name: "Asheara's Khanjar", class: "Rogue", source: "Astaroth" },
+    { name: "Autumnal Crown", class: "Druid", source: "Echo of Varshan" },
+    { name: "Axial Conduit", class: "Sorcerer", source: "Bartuc" },
+    { name: "Azurewrath", class: "Barbarian / All", source: "General Pool / Any Boss" },
+    { name: "Balazan's Maxtlatl", class: "Spiritborn", source: "Echo of Varshan" },
+    { name: "Bane of Ahjad-Den", class: "Barbarian", source: "Harbinger of Hatred" },
+    { name: "Banished Lord's Talisman", class: "All Classes", source: "General Pool / Random World Drop OR Cube Craft" },
+    { name: "Bands of Ichorous Rose", class: "Rogue", source: "Echo of Varshan" },
+    { name: "Bastion of Sir Matthias", class: "Paladin", source: "Grigoire, The Galvanic" },
+    { name: "Battle Trance", class: "Barbarian", source: "Astaroth" },
+    { name: "Beastfall Boots", class: "Rogue", source: "Andariel" },
+    { name: "Bindings of Attrition", class: "Warlock", source: "Astaroth" },
+    { name: "Black River", class: "Necromancer", source: "Duriel / Andariel" },
+    { name: "Blood Artisan's Cuirass", class: "Necromancer", source: "Grigoire, The Galvanic" },
+    { name: "Blood Moon Breeches", class: "Necromancer", source: "Astaroth" },
+    { name: "Blood Wake", class: "Necromancer", source: "Harbinger of Hatred" },
+    { name: "Blood-Mad Idol", class: "All Classes", source: "General Pool / Random World Drop OR Cube Craft" },
+    { name: "Bloodless Scream", class: "Necromancer", source: "Astaroth" },
+    { name: "Blue Rose", class: "Sorcerer", source: "Echo of Varshan" },
+    { name: "Bridle of Tor'Baalos", class: "Warlock", source: "Harbinger of Hatred" },
+    { name: "Cage of Madness", class: "Warlock", source: "Grigoire, The Galvanic" },
+    { name: "Cowl of Malefic Torment", class: "Warlock", source: "Beast in the Ice" },
+    { name: "Craze of the Dead God", class: "Spiritborn", source: "Andariel" },
+    { name: "Cruor's Embrace", class: "Necromancer", source: "Lord Zir" },
+    { name: "Crown of Lucion", class: "All Classes", source: "Astaroth / General Pool" },
+    { name: "Condemnation", class: "Rogue", source: "Echo of Varshan" },
+    { name: "Dark Howl", class: "Druid", source: "Beast in the Ice" },
+    { name: "Dawnfire", class: "Paladin", source: "Andariel" },
+    { name: "Death's Pavane", class: "Rogue", source: "Echo of Varshan" },
+    { name: "Deathgrip", class: "Necromancer", source: "Grigoire, The Galvanic" },
+    { name: "Deathless Visage", class: "Necromancer", source: "Beast in the Ice" },
+    { name: "Deathmask of Nirmitruq", class: "Rogue", source: "Andariel" },
+    { name: "Deathspeaker's Pendant", class: "Necromancer", source: "Echo of Varshan" },
+    { name: "Desperate March", class: "Rogue", source: "Grigoire, The Galvanic" },
+    { name: "Dirge of Airidah", class: "Druid", source: "Astaroth" },
+    { name: "Dirge of Odium", class: "Warlock", source: "Lord Zir" },
+    { name: "Dolmen Stone", class: "Druid", source: "Beast in the Ice" },
+    { name: "Doombringer", class: "All Classes", source: "Belial / Any Lair Boss (Torment 1+)" },
+    { name: "Drognan's Anguish", class: "Sorcerer", source: "Andariel" },
+    { name: "Eaglehorn", class: "Rogue", source: "Echo of Varshan" },
+    { name: "Earthbreaker", class: "Druid", source: "Bartuc" },
+    { name: "Ebonpiercer", class: "Necromancer", source: "Andariel" },
+    { name: "Echo of Kwatli", class: "Spiritborn", source: "Astaroth" },
+    { name: "El'druin, Sword of Justice", class: "All Classes", source: "Belial / Any Lair Boss (Torment 1+)" },
+    { name: "Elegy", class: "Warlock", source: "Andariel / Lord Zir" },
+    { name: "Emblem of Staalbreak", class: "Barbarian", source: "Andariel" },
+    { name: "Endurant Faith", class: "All Classes", source: "General Pool / Random World Drop OR Cube Craft" },
+    { name: "Esadora's Overflowing Cameo", class: "Sorcerer", source: "Andariel" },
+    { name: "Esu's Heirloom", class: "Sorcerer", source: "Astaroth" },
+    { name: "Etna's Lost Dagger", class: "Rogue", source: "Harbinger of Hatred" },
+    { name: "Eye of Baal", class: "Warlock", source: "Bartuc" },
+    { name: "Eyes in the Dark", class: "Rogue", source: "Astaroth" },
+    { name: "Fang of the Vipermagi", class: "Sorcerer", source: "Lord Zir" },
+    { name: "Fields of Crimson", class: "Barbarian", source: "Lord Zir" },
+    { name: "Fists of Fate", class: "All Classes", source: "General Pool / Random World Drop OR Cube Craft" },
+    { name: "Flameweaver", class: "Sorcerer", source: "Harbinger of Hatred" },
+    { name: "Fleshrender", class: "Druid", source: "Harbinger of Hatred" },
+    { name: "Fleshwrit Carapace", class: "Warlock", source: "Lord Zir" },
+    { name: "Flickerstep", class: "All Classes", source: "General Pool / Random World Drop OR Cube Craft" },
+    { name: "Footfalls of the Waning World", class: "Warlock", source: "Astaroth" },
+    { name: "Fractured Runestone", class: "Druid", source: "Echo of Varshan" },
+    { name: "Fractured Winterglass", class: "Sorcerer", source: "Astaroth" },
+    { name: "Frostburn", class: "All Classes", source: "General Pool / Random World Drop OR Cube Craft" },
+    { name: "Galvanic Azurite", class: "Sorcerer", source: "Echo of Varshan" },
+    { name: "Gate of the Red Dawn", class: "Paladin", source: "Harbinger of Hatred" },
+    { name: "Gathlen's Birthright", class: "Druid", source: "Lord Zir" },
+    { name: "Gauntlets of Sheol", class: "Warlock", source: "Echo of Varshan" },
+    { name: "Gift of Frost", class: "Sorcerer", source: "Beast in the Ice" },
+    { name: "Gladiator's Triumph", class: "Rogue", source: "Astaroth" },
+    { name: "Godslayer Crown", class: "All Classes", source: "Andariel / General Pool" },
+    { name: "Gohr's Devastating Grips", class: "Barbarian", source: "Grigoire, The Galvanic" },
+    { name: "Grasp of Shadow", class: "Rogue", source: "Bartuc" },
+    { name: "Gravewalker's Hand", class: "Necromancer", source: "Bartuc" },
+    { name: "Greatstaff of the Crone", class: "Druid", source: "Echo of Varshan" },
+    { name: "Greaves of the Empty Tomb", class: "Necromancer", source: "Grigoire, The Galvanic" },
+    { name: "Greenwalker's Oath", class: "Druid", source: "Echo of Varshan" },
+    { name: "Greenwalker's Signet", class: "Druid", source: "Andariel" },
+    { name: "Griswold's Opus", class: "Paladin", source: "Astaroth" },
+    { name: "Hail of Verglas", class: "Sorcerer", source: "Astaroth" },
+    { name: "Hands of the Worldbreaker", class: "Warlock", source: "Grigoire, The Galvanic" },
+    { name: "Hangman's Hand", class: "Necromancer", source: "Echo of Varshan" },
+    { name: "Harlequin Crest (Shako)", class: "All Classes", source: "Belial / Any Lair Boss (Torment 1+)" },
+    { name: "Harmony of Ebewaka", class: "Spiritborn", source: "Bartuc" },
+    { name: "Hecaton Chasm", class: "Warlock", source: "Astaroth" },
+    { name: "Heir of Perdition", class: "All Classes", source: "Belial / Any Lair Boss (Torment 1+)" },
+    { name: "Hellhammer", class: "Barbarian", source: "Andariel" },
+    { name: "Henri's Perquisition", class: "Sorcerer, Necromancer, Warlock", source: "Season 15 Capstones (Baal, Mephisto, Diablo) ~15%" },
+    { name: "Herald of Zakarum", class: "Paladin", source: "Astaroth" },
+    { name: "Hooves of the Mountain God", class: "Barbarian", source: "Astaroth" },
+    { name: "Howl from Below", class: "Necromancer", source: "Beast in the Ice" },
+    { name: "Hunter's Zenith", class: "Druid", source: "Grigoire, The Galvanic" },
+    { name: "Ifeh's Dire Totem", class: "Druid", source: "Harbinger of Hatred" },
+    { name: "Iceheart Brais", class: "Sorcerer", source: "Grigoire, The Galvanic" },
+    { name: "In-Geom", class: "Barbarian, Druid, Rogue, Necromancer, Paladin, Warlock", source: "Season 15 Capstones (Baal, Mephisto, Diablo) ~10%" },
+    { name: "Infernal Homunculus", class: "Warlock", source: "Beast in the Ice" },
+    { name: "Insatiable Fury", class: "Druid", source: "Andariel" },
+    { name: "Jacinth Shell", class: "Spiritborn", source: "Andariel" },
+    { name: "Judicant's Glaivehelm", class: "Paladin", source: "Lord Zir" },
+    { name: "Judgment of Auriel", class: "Paladin", source: "Lord Zir" },
+    { name: "Kessime's Legacy", class: "Necromancer", source: "Andariel" },
+    { name: "Kilt of Blackwing", class: "Druid", source: "Beast in the Ice" },
+    { name: "Leoric's Crown", class: "All Classes", source: "Season 15 Capstones (Baal, Mephisto, Diablo) ~15%" },
+    { name: "Levin Grasp", class: "Sorcerer", source: "Echo of Varshan" },
+    { name: "Lidless Wall", class: "Necromancer", source: "Andariel" },
+    { name: "Light's Rebuke", class: "Paladin", source: "Beast in the Ice" },
+    { name: "Litany of Sable", class: "Warlock", source: "Astaroth" },
+    { name: "Locran's Talisman", class: "All Classes", source: "General Pool / Random World Drop OR Cube Craft" },
+    { name: "Mad Wolf's Glee", class: "Druid", source: "Astaroth" },
+    { name: "Malefic Crescent", class: "Druid", source: "Beast in the Ice" },
+    { name: "Mantle of the Grey", class: "Paladin", source: "Harbinger of Hatred" },
+    { name: "Mark of the Old Wolf", class: "Druid", source: "Echo of Varshan" },
+    { name: "Melted Heart of Selig", class: "All Classes", source: "Belial / Any Lair Boss (Torment 1+)" },
+    { name: "Messerschmidt's Reaver", class: "Barbarian, Druid, Necromancer, Paladin, Warlock", source: "Season 15 Capstones (Baal, Mephisto, Diablo) ~15%" },
+    { name: "Might of Qual-Kehk", class: "Barbarian", source: "Grigoire, The Galvanic" },
+    { name: "Might of the Ursine", class: "Druid", source: "Harbinger of Hatred" },
+    { name: "Morlu Fleshward", class: "Warlock", source: "Echo of Varshan" },
+    { name: "Mother's Embrace", class: "All Classes", source: "General Pool / Random World Drop OR Cube Craft" },
+    { name: "Nemesis Bracers", class: "All Classes", source: "Season 15 Capstones (Baal, Mephisto, Diablo) ~15%" },
+    { name: "Nesekem, The Herald", class: "All Classes", source: "Belial / Any Lair Boss (Torment 1+)" },
+    { name: "Night Terror", class: "Warlock", source: "Andariel" },
+    { name: "Nomad's Longing Heart", class: "Barbarian", source: "Harbinger of Hatred" },
+    { name: "Onyx Soul", class: "Sorcerer", source: "Echo of Varshan" },
+    { name: "Orphan Maker", class: "Rogue", source: "Beast in the Ice" },
+    { name: "Orsivane", class: "Sorcerer", source: "Andariel" },
+    { name: "Overkill", class: "Barbarian", source: "Echo of Varshan" },
+    { name: "Pact of Bone", class: "Necromancer", source: "Harbinger of Hatred" },
+    { name: "Paingorger's Gauntlets", class: "All Classes", source: "Grigoire, The Galvanic / General Pool" },
+    { name: "Peacemonger's Signet", class: "Spiritborn", source: "Grigoire, The Galvanic" },
+    { name: "Penitent Greaves", class: "All Classes", source: "General Pool / Random World Drop OR Cube Craft" },
+    { name: "Pitfighter's Gull", class: "Rogue", source: "Echo of Varshan" },
+    { name: "Protection of the Prime", class: "Spiritborn", source: "Beast in the Ice" },
+    { name: "Protean Heart", class: "Spiritborn", source: "Harbinger of Hatred" },
+    { name: "Rage of Harrogath", class: "Barbarian", source: "Grigoire, The Galvanic" },
+    { name: "Raiment of the Infinite", class: "Sorcerer", source: "Echo of Varshan" },
+    { name: "Rakanoth's Wake", class: "All Classes", source: "General Pool / Random World Drop OR Cube Craft" },
+    { name: "Ramaladni's Magnum Opus", class: "Barbarian", source: "Grigoire, The Galvanic" },
+    { name: "Razorplate", class: "All Classes", source: "Duriel / General Pool" },
+    { name: "Rictus of Terror", class: "Warlock", source: "Echo of Varshan" },
+    { name: "Rimeblood", class: "Sorcerer", source: "Lord Zir" },
+    { name: "Ring of Mendeln", class: "Necromancer", source: "Beast in the Ice" },
+    { name: "Ring of Starless Skies", class: "All Classes", source: "Belial / Any Lair Boss (Torment 1+)" },
+    { name: "Ring of the Midnight Sun", class: "Spiritborn", source: "Astaroth" },
+    { name: "Ring of the Ravenous", class: "Barbarian", source: "Beast in the Ice" },
+    { name: "Ring of the Sacrilegious Soul", class: "Necromancer", source: "Astaroth" },
+    { name: "Ring of Writhing Moon", class: "Spiritborn", source: "Lord Zir" },
+    { name: "Rod of Kepeleke", class: "Spiritborn", source: "Astaroth" },
+    { name: "Rustbitten Dirk", class: "All Classes", source: "General Pool / Random World Drop OR Cube Craft" },
+    { name: "Saboteur's Signet", class: "Rogue", source: "Beast in the Ice" },
+    { name: "Sanctis of Kethamar", class: "Paladin", source: "Beast in the Ice" },
+    { name: "Sanguivor, Blade of Zir", class: "Necromancer", source: "Lord Zir" },
+    { name: "Scourge of Duriel", class: "Warlock", source: "Echo of Varshan" },
+    { name: "Scoundrel's Leathers", class: "Rogue", source: "Harbinger of Hatred" },
+    { name: "Scorn of the Earth", class: "Paladin", source: "Beast in the Ice" },
+    { name: "Sea Lord's Fine Gloves", class: "Rogue", source: "Echo of Varshan" },
+    { name: "Seal of the Second Trumpet", class: "Paladin", source: "Echo of Varshan" },
+    { name: "Seal of the Ophanim", class: "Warlock", source: "Echo of Varshan" },
+    { name: "Seed of Horazon", class: "Warlock", source: "Grigoire, The Galvanic" },
+    { name: "Sepazontec", class: "Spiritborn", source: "Harbinger of Hatred" },
+    { name: "Shard of Verathiel", class: "All Classes", source: "Echo of Varshan / General Pool" },
+    { name: "Shattered Vow", class: "All Classes", source: "Belial / Any Lair Boss (Torment 1+)" },
+    { name: "Shrouded Gift", class: "Rogue", source: "Harbinger of Hatred" },
+    { name: "Shroud of False Death", class: "All Classes", source: "Belial / Any Lair Boss (Torment 1+)" },
+    { name: "Shroud of Khanduras", class: "Rogue", source: "Lord Zir" },
+    { name: "Sidhe Bindings", class: "Sorcerer", source: "Harbinger of Hatred" },
+    { name: "Signet of Pelghain", class: "All Classes", source: "Beast in the Ice / General Pool" },
+    { name: "Sire of Sin", class: "Warlock", source: "Grigoire, The Galvanic" },
+    { name: "Skyhunter", class: "Rogue", source: "Lord Zir" },
+    { name: "Soulbrand", class: "All Classes", source: "General Pool / Random World Drop OR Cube Craft" },
+    { name: "Spine of Tathamet", class: "Warlock", source: "Harbinger of Hatred" },
+    { name: "Squirt's Blouse", class: "All Classes", source: "Season 15 Capstones (Baal, Mephisto, Diablo) ~10%" },
+    { name: "Staff of Endless Rage", class: "Sorcerer", source: "Echo of Varshan" },
+    { name: "Staff of Lam Esen", class: "Sorcerer", source: "Lord Zir" },
+    { name: "Starfall Coronet", class: "Sorcerer", source: "Beast in the Ice" },
+    { name: "Stone of Jordan", class: "All Classes", source: "Season 15 Capstones (Baal, Mephisto, Diablo) ~5%" },
+    { name: "Stone of Vehemen", class: "Druid", source: "Echo of Varshan" },
+    { name: "Storm's Companion", class: "Druid", source: "Andariel" },
+    { name: "Strike of Stormhorn", class: "Sorcerer", source: "Grigoire, The Galvanic" },
+    { name: "Sunbrand", class: "Paladin", source: "Grigoire, The Galvanic" },
+    { name: "Sunstained War-Crozier", class: "Spiritborn", source: "Grigoire, The Galvanic / Echo of Varshan" },
+    { name: "Tal Rasha's Iridescent Loop", class: "Sorcerer", source: "Harbinger of Hatred" },
+    { name: "Tassets of the Dawning Sky", class: "All Classes", source: "General Pool / Random World Drop OR Cube Craft" },
+    { name: "Temerity", class: "All Classes", source: "Harbinger of Hatred / General Pool" },
+    { name: "The Basilisk", class: "Druid", source: "Grigoire, The Galvanic" },
+    { name: "The Blade of Sight Aflame", class: "Warlock", source: "Beast in the Ice" },
+    { name: "The Butcher's Cleaver", class: "All Classes", source: "General Pool / Any Boss" },
+    { name: "The Fecund Seal", class: "Warlock", source: "Harbinger of Hatred" },
+    { name: "The Furnace", class: "Barbarian, Druid, Necromancer, Paladin, Warlock", source: "Season 15 Capstones (Baal, Mephisto, Diablo) ~15%" },
+    { name: "The Gloom Ward", class: "Necromancer", source: "Harbinger of Hatred" },
+    { name: "The Grandfather", class: "All Classes", source: "Belial / Any Lair Boss (Torment 1+)" },
+    { name: "The Hand of Naz", class: "Necromancer", source: "Echo of Varshan" },
+    { name: "The Maestro", class: "Rogue", source: "Grigoire, The Galvanic" },
+    { name: "The Mortacrux", class: "Necromancer", source: "Grigoire, The Galvanic" },
+    { name: "The Oculus", class: "Sorcerer", source: "Grigoire, The Galvanic" },
+    { name: "The Relentless Heart", class: "Barbarian", source: "Beast in the Ice" },
+    { name: "The Third Blade", class: "Barbarian", source: "Astaroth" },
+    { name: "The Umbracrux", class: "Rogue", source: "Lord Zir" },
+    { name: "Thousand-Eye Reaver", class: "All Classes", source: "General Pool / Random World Drop OR Cube Craft" },
+    { name: "Thrice-Woven Nightmare", class: "Warlock", source: "Echo of Varshan" },
+    { name: "Thundergod's Blessing", class: "All Classes", source: "General Pool / Any Boss" },
+    { name: "Tibault's Will", class: "All Classes", source: "General Pool / Random World Drop OR Cube Craft" },
+    { name: "Twin Strikes", class: "Barbarian", source: "Lord Zir" },
+    { name: "Tyrael's Might", class: "All Classes", source: "Belial / Any Lair Boss (Torment 1+)" },
+    { name: "Ugly Bastard Helm", class: "Barbarian", source: "Harbinger of Hatred" },
+    { name: "Unsung Ascetic's Wraps", class: "Druid", source: "Lord Zir" },
+    { name: "Vasily's Prayer", class: "Druid", source: "Echo of Varshan" },
+    { name: "Vision of the Firestorm", class: "Sorcerer", source: "Grigoire, The Galvanic" },
+    { name: "Vox Omnium", class: "Sorcerer", source: "Beast in the Ice / Echo of Varshan" },
+    { name: "Waxing Gibbous", class: "Druid", source: "Lord Zir" },
+    { name: "Wendigo Brand", class: "All Classes", source: "General Pool / Random World Drop OR Cube Craft" },
+    { name: "Wildheart Hunger", class: "Druid", source: "Astaroth" },
+    { name: "Will of Stone", class: "Druid", source: "Grigoire, The Galvanic" },
+    { name: "Windforce", class: "Rogue", source: "Grigoire, The Galvanic" },
+    { name: "Word of Hakan", class: "Rogue", source: "Grigoire, The Galvanic" },
+    { name: "Wreath of Auric Laurel", class: "Paladin", source: "Echo of Varshan" },
+    { name: "Wyrdskin", class: "All Classes", source: "General Pool / Random World Drop OR Cube Craft" },
+    { name: "X'Fal's Corroded Signet", class: "All Classes", source: "Lord Zir / General Pool" },
+    { name: "Yen's Blessing", class: "All Classes", source: "General Pool / Any Boss" }
+];
+
+uniquesData.sort((a, b) => a.name.localeCompare(b.name));
+
+function renderTable(data) {
+    const tbody = document.getElementById('uniqueTableBody');
+    const counter = document.getElementById('itemCount');
+    
+    if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 30px; color:#888;">No unique items match your search query or class filter.</td></tr>';
+        counter.textContent = 'Showing 0 items';
+        return;
+    }
+
+    let html = '';
+    data.forEach(item => {
+        html += `
+            <tr>
+                <td class="item-name">${item.name}</td>
+                <td><span class="badge badge-class">${item.class}</span></td>
+                <td>${item.source}</td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+    counter.textContent = `Showing ${data.length} of ${uniquesData.length} items`;
+}
+
+function filterTable() {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+    const classFilter = document.getElementById('classSelect').value.toLowerCase();
+
+    const filtered = uniquesData.filter(item => {
+        let matchesClass = true;
+        if (classFilter !== 'all') {
+            matchesClass = item.class.toLowerCase().includes(classFilter) || item.class.toLowerCase().includes('all classes');
+        }
+
+        const matchesQuery = 
+            item.name.toLowerCase().includes(query) ||
+            item.class.toLowerCase().includes(query) ||
+            item.source.toLowerCase().includes(query);
+
+        return matchesClass && matchesQuery;
+    });
+
+    renderTable(filtered);
+}
+
+renderTable(uniquesData);
+</script>
+
+</body>
+</html>
