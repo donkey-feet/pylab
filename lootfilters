@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diablo 4 Loot Filter Templates</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --border-color: #333333;
+            --header-starter: #8b0000;
+            --header-midgame: #1e3a8a;
+            --header-endgame: #4c1d95;
+            --group-header-bg: #282828;
+            --accent-red: #ff4d4d;
+            --accent-blue: #4da6ff;
+            --accent-pink: #ff66cc;
+            --accent-green: #33cc66;
+            --accent-white: #e6e6e6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .description {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        /* LEGEND STYLES */
+        .legend-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .legend-title {
+            font-weight: bold;
+            font-size: 1rem;
+            color: #fff;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.88rem;
+        }
+
+        .global-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            background-color: #2d2d2d;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #444;
+        }
+
+        .template-section {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .template-header {
+            padding: 15px 20px;
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .starter-header { background-color: var(--header-starter); }
+        .midgame-header { background-color: var(--header-midgame); }
+        .endgame-header { background-color: var(--header-endgame); }
+
+        .arrow {
+            transition: transform 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .collapsed .arrow {
+            transform: rotate(-90deg);
+        }
+
+        .template-content {
+            display: block;
+        }
+
+        .template-content.hidden {
+            display: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+
+        th {
+            background-color: #171717;
+            color: #888;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .group-header-row {
+            background-color: var(--group-header-bg);
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .group-header-row:hover {
+            background-color: #333333;
+        }
+
+        .group-header-row td {
+            padding: 10px 15px;
+            border-top: 1px solid #333;
+            border-bottom: 1px solid #333;
+        }
+
+        .group-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        tr.rule-row:hover {
+            background-color: #252525;
+        }
+
+        tr.rule-row.hidden {
+            display: none;
+        }
+
+        .rule-num {
+            font-weight: bold;
+            color: #888;
+            width: 50px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .badge-red { background-color: var(--accent-red); color: #fff; }
+        .badge-blue { background-color: var(--accent-blue); }
+        .badge-pink { background-color: var(--accent-pink); }
+        .badge-white { background-color: var(--accent-white); }
+        .badge-green { background-color: var(--accent-green); }
+        .badge-hide { background-color: #444; color: #aaa; }
+        .badge-show { background-color: #ffd700; color: #000; }
+        .badge-disabled { background-color: #222; color: #555; }
+
+        ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        li {
+            margin-bottom: 2px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin-top: 4px;
+            color: #fff;
+        }
+
+        .section-title:first-child {
+            margin-top: 0;
+        }
+
+        .sub-bullet-list {
+            padding-left: 18px;
+            margin-top: 3px;
+            margin-bottom: 3px;
+            color: #bbb;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Diablo 4 Loot Filter Rule Templates</h1>
+    <p class="description">Standardized 25-Rule Framework with Collapsible Stage Templates & Group Sub-Headers</p>
+
+    <!-- LEGEND CARD -->
+    <div class="legend-card">
+        <div class="legend-title">Color Legend</div>
+        <div class="legend-grid">
+            <div class="legend-item">
+                <span class="badge badge-red">Red</span>
+                <span>Build Specific</span>
+            </div>
+            <div class="legend-item">
+                <span class="badge badge-blue">Blue</span>
+                <span>Cube Gear (3-to-1, Craft Unique, etc.)</span>
+            </div>
+            <div class="legend-item">
+                <span class="badge badge-pink">Pink</span>
+                <span>Alt Gear</span>
+            </div>
+            <div class="legend-item">
+                <span class="badge badge-white">White</span>
+                <span>Salvage</span>
+            </div>
+            <div class="legend-item">
+                <span class="badge badge-green">Green</span>
+                <span>Sell</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="global-controls">
+        <button class="btn" onclick="toggleAll(true)">Expand All</button>
+        <button class="btn" onclick="toggleAll(false)">Collapse All</button>
+    </div>
+
+    <!-- 1. STARTER TEMPLATE -->
+    <div class="template-section">
+        <div class="template-header starter-header" onclick="toggleTemplate('starter')">
+            <span>1. Starter Filter Template</span>
+            <span class="arrow" id="arrow-starter">▼</span>
+        </div>
+        <div class="template-content" id="content-starter">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rule #</th>
+                        <th>Action</th>
+                        <th>Item Type Match</th>
+                        <th>Properties / Rarity</th>
+                        <th>Specific Criteria & Rules</th>
+                    </tr>
+                </thead>
+                <tbody id="starter-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 2. MIDGAME TEMPLATE -->
+    <div class="template-section">
+        <div class="template-header midgame-header" onclick="toggleTemplate('midgame')">
+            <span>2. Midgame Filter Template</span>
+            <span class="arrow" id="arrow-midgame">▼</span>
+        </div>
+        <div class="template-content" id="content-midgame">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rule #</th>
+                        <th>Action</th>
+                        <th>Item Type Match</th>
+                        <th>Properties / Rarity</th>
+                        <th>Specific Criteria & Rules</th>
+                    </tr>
+                </thead>
+                <tbody id="midgame-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 3. ENDGAME TEMPLATE -->
+    <div class="template-section">
+        <div class="template-header endgame-header" onclick="toggleTemplate('endgame')">
+            <span>3. Endgame Filter Template</span>
+            <span class="arrow" id="arrow-endgame">▼</span>
+        </div>
+        <div class="template-content" id="content-endgame">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rule #</th>
+                        <th>Action</th>
+                        <th>Item Type Match</th>
+                        <th>Properties / Rarity</th>
+                        <th>Specific Criteria & Rules</th>
+                    </tr>
+                </thead>
+                <tbody id="endgame-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+const slots = [
+    "Helm", "Chest Armor", "Gloves", "Pants", "Boots", "Amulet",
+    "Ring (Slot 1)", "Ring (Slot 2)", "Weapon (Slot 1)", "Weapon (Slot 2)",
+    "Weapon (Slot 3)", "Weapon (Slot 4)"
+];
+
+function generateBuildGearRows(templateType) {
+    let rows = [];
+    slots.forEach((slot, idx) => {
+        let ruleNum = idx + 1;
+        let isAncestral = templateType !== "starter";
+        let criteria = "";
+
+        if (templateType === "starter") {
+            criteria = `
+                <ul>
+                    <li>Has Required Affix [Min: 2]</li>
+                    <li>Is Specific Unique [Build Match] - Only used for Unique items</li>
+                </ul>`;
+        } else if (templateType === "midgame") {
+            criteria = `
+                <ul>
+                    <li>Has Required Affix [Min: 1]</li>
+                    <li>Has Optional Affix [Min: 1]</li>
+                    <li>Is Specific Unique [Build Match] - Only used for Unique items</li>
+                </ul>`;
+        } else if (templateType === "endgame") {
+            criteria = `
+                <ul>
+                    <li>Has Required Greater Affix [Min: 1]</li>
+                    <li>Has Optional Affix [Min: 1]</li>
+                    <li>Is Specific Unique [Build Match] - Only used for Unique items</li>
+                </ul>`;
+        }
+
+        rows.push({
+            num: ruleNum,
+            group: "Group 1: Build Gear (Rules 1-12)",
+            groupId: "group-1",
+            action: '<span class="badge badge-red">Recolor: Red</span>',
+            type: slot,
+            prop: isAncestral ? "Ancestral" : "Any",
+            criteria: criteria
+        });
+    });
+    return rows;
+}
+
+function generateCommonRules(templateType) {
+    let isAncestral = templateType !== "starter";
+    let propPrefix = isAncestral ? "Ancestral " : "";
+    
+    return [
+        {
+            num: 13, group: "Group 2: Cube Gear (Rules 13-14)", groupId: "group-2", action: '<span class="badge badge-blue">Recolor: Blue</span>',
+            type: "Armor, Jewelry, Weapons", prop: propPrefix + "Unique",
+            criteria: '<ul><li>Is Specific Unique [Build Match]</li><li>Good for 3-to-1 Recipe</li></ul>'
+        },
+        {
+            num: 14, group: "Group 2: Cube Gear (Rules 13-14)", groupId: "group-2", action: '<span class="badge badge-blue">Recolor: Blue</span>',
+            type: "Build Unique Base Slots", prop: propPrefix + "Common, Magic",
+            criteria: '<ul><li>Slot matches build unique requirement</li><li>Good for Craft Unique bases</li></ul>'
+        },
+        {
+            num: 15, group: "Group 3: Other Gear (Rules 15-16)", groupId: "group-3", action: '<span class="badge badge-show">Show</span>',
+            type: "Armor, Jewelry, Weapons", prop: "Mythic",
+            criteria: '<ul><li>Displays all Mythic Uniques</li></ul>'
+        },
+        {
+            num: 16, group: "Group 3: Other Gear (Rules 15-16)", groupId: "group-3", action: '<span class="badge badge-pink">Recolor: Pink</span>',
+            type: "Armor, Jewelry, Weapons", prop: "Ancestral",
+            criteria: `
+                <ul>
+                    <li>Has Required Greater Affix [Min: 2]
+                        <ul class="sub-bullet-list">
+                            <li>Attack Speed</li>
+                            <li>Crit Chance</li>
+                            <li>Crit Damage</li>
+                            <li>Vulnerable Damage</li>
+                            <li>Damage Over Time</li>
+                            <li>Max Life</li>
+                            <li>Armor</li>
+                            <li>Resistance to All</li>
+                            <li>Damage Reduction</li>
+                            <li>Cooldown Reduction</li>
+                            <li>Resource Cost Reduction</li>
+                            <li>Movement Speed</li>
+                            <li>Ranks to All Skills</li>
+                        </ul>
+                    </li>
+                </ul>`
+        },
+        {
+            num: 17, group: "Group 4: Charms & Seals (Rules 17-19)", groupId: "group-4", action: '<span class="badge badge-red">Recolor: Red</span>',
+            type: "Charms, Seals", prop: isAncestral ? "Ancestral" : "Any",
+            criteria: '<ul><li>Talisman Set Bonus [Build Match]</li><li>Has Required Affix [Min: 1]</li></ul>'
+        },
+        {
+            num: 18, group: "Group 4: Charms & Seals (Rules 17-19)", groupId: "group-4", action: '<span class="badge badge-show">Show</span>',
+            type: "Charms, Seals", prop: "Unique, Mythic",
+            criteria: '<ul><li>Displays all Unique & Mythic Charms/Seals</li></ul>'
+        },
+        {
+            num: 19, group: "Group 4: Charms & Seals (Rules 17-19)", groupId: "group-4", action: '<span class="badge badge-blue">Recolor: Blue</span>',
+            type: "Charms, Seals", prop: isAncestral ? "Ancestral" : "Any",
+            criteria: '<ul><li>Talisman Set Bonus [Build Match]</li><li>Good for 3-to-1</li></ul>'
+        },
+        {
+            num: 20, group: "Group 5: Salvage, Sell, Junk (Rules 20-24)", groupId: "group-5", action: '<span class="badge badge-white">Recolor: White</span>',
+            type: "Armor, Jewelry, Weapons", prop: "Legendary, Unique",
+            criteria: '<ul><li>Catches off-build Legendaries & Uniques</li><li>Used for Blacksmith salvage</li></ul>'
+        },
+        {
+            num: 21, group: "Group 5: Salvage, Sell, Junk (Rules 20-24)", groupId: "group-5", action: '<span class="badge badge-white">Recolor: White</span>',
+            type: "Charms, Seals", prop: "Rare, Talisman Set",
+            criteria: '<ul><li>Catches off-build Charms & Seals</li><li>Used for salvage materials</li></ul>'
+        },
+        {
+            num: 22, group: "Group 5: Salvage, Sell, Junk (Rules 20-24)", groupId: "group-5", action: '<span class="badge badge-green">Recolor: Green</span>',
+            type: "Seals", prop: "Legendary",
+            criteria: '<ul><li>Catches off-build Seals</li><li>Used for gold sale</li></ul>'
+        },
+        {
+            num: 23, group: "Group 5: Salvage, Sell, Junk (Rules 20-24)", groupId: "group-5", action: '<span class="badge badge-hide">Hide</span>',
+            type: "Armor, Jewelry, Weapons", prop: "Common, Magic, Rare",
+            criteria: '<ul><li>Hides all non-build Common, Magic, & Rare gear</li></ul>'
+        },
+        {
+            num: 24, group: "Group 5: Salvage, Sell, Junk (Rules 20-24)", groupId: "group-5", action: '<span class="badge badge-hide">Hide</span>',
+            type: "Charms, Seals", prop: "Common, Magic",
+            criteria: '<ul><li>Hides all Common & Magic Charms/Seals</li></ul>'
+        },
+        {
+            num: 25, group: "Reserved (Rule 25)", groupId: "group-reserved", action: '<span class="badge badge-disabled">Disabled</span>',
+            type: "None", prop: "None",
+            criteria: '<ul><li>Empty Rule Slot</li></ul>'
+        }
+    ];
+}
+
+function renderTable(containerId, templateType) {
+    const tbody = document.getElementById(containerId);
+    const rules = [...generateBuildGearRows(templateType), ...generateCommonRules(templateType)];
+    
+    let html = '';
+    let currentGroup = '';
+
+    rules.forEach(r => {
+        if (r.group !== currentGroup) {
+            currentGroup = r.group;
+            let groupKey = `${templateType}-${r.groupId}`;
+            html += `
+                <tr class="group-header-row" onclick="toggleGroup('${groupKey}')">
+                    <td colspan="5">
+                        <div class="group-title">
+                            <span class="arrow" id="arrow-${groupKey}">▼</span>
+                            <span>${r.group}</span>
+                        </div>
+                    </td>
+                </tr>`;
+        }
+
+        let groupKey = `${templateType}-${r.groupId}`;
+        html += `
+            <tr class="rule-row row-${groupKey}">
+                <td class="rule-num">${r.num}</td>
+                <td>${r.action}</td>
+                <td>${r.type}</td>
+                <td>${r.prop}</td>
+                <td>${r.criteria}</td>
+            </tr>`;
+    });
+
+    tbody.innerHTML = html;
+}
+
+function toggleTemplate(templateType) {
+    const content = document.getElementById(`content-${templateType}`);
+    const arrow = document.getElementById(`arrow-${templateType}`);
+    const isHidden = content.classList.contains('hidden');
+
+    if (isHidden) {
+        content.classList.remove('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+    } else {
+        content.classList.add('hidden');
+        arrow.style.transform = 'rotate(-90deg)';
+    }
+}
+
+function toggleGroup(groupKey) {
+    const rows = document.querySelectorAll(`.row-${groupKey}`);
+    const arrow = document.getElementById(`arrow-${groupKey}`);
+    let isHidden = false;
+
+    rows.forEach(row => {
+        if (row.classList.contains('hidden')) {
+            row.classList.remove('hidden');
+        } else {
+            row.classList.add('hidden');
+            isHidden = true;
+        }
+    });
+
+    if (arrow) {
+        arrow.style.transform = isHidden ? 'rotate(-90deg)' : 'rotate(0deg)';
+    }
+}
+
+function toggleAll(expand) {
+    ['starter', 'midgame', 'endgame'].forEach(templateType => {
+        const content = document.getElementById(`content-${templateType}`);
+        const arrow = document.getElementById(`arrow-${templateType}`);
+        if (expand) {
+            content.classList.remove('hidden');
+            arrow.style.transform = 'rotate(0deg)';
+        } else {
+            content.classList.add('hidden');
+            arrow.style.transform = 'rotate(-90deg)';
+        }
+
+        ['group-1', 'group-2', 'group-3', 'group-4', 'group-5', 'group-reserved'].forEach(groupId => {
+            const groupKey = `${templateType}-${groupId}`;
+            const rows = document.querySelectorAll(`.row-${groupKey}`);
+            const grpArrow = document.getElementById(`arrow-${groupKey}`);
+
+            rows.forEach(row => {
+                if (expand) {
+                    row.classList.remove('hidden');
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+
+            if (grpArrow) {
+                grpArrow.style.transform = expand ? 'rotate(0deg)' : 'rotate(-90deg)';
+            }
+        });
+    });
+}
+
+renderTable('starter-body', 'starter');
+renderTable('midgame-body', 'midgame');
+renderTable('endgame-body', 'endgame');
+</script>
+
+</body>
+</html>
