@@ -21,12 +21,16 @@
             --accent-white: #e6e6e6;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 20px;
+            padding: 12px;
             line-height: 1.5;
         }
 
@@ -39,12 +43,14 @@
             text-align: center;
             color: #ffffff;
             margin-bottom: 5px;
+            font-size: 1.5rem;
         }
 
         .description {
             text-align: center;
             color: #aaa;
             margin-bottom: 20px;
+            font-size: 0.9rem;
         }
 
         /* LEGEND STYLES */
@@ -52,14 +58,14 @@
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 15px 20px;
+            padding: 12px 16px;
             margin-bottom: 20px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
         .legend-title {
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: #fff;
             margin-bottom: 10px;
             text-transform: uppercase;
@@ -68,7 +74,7 @@
 
         .legend-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 10px;
         }
 
@@ -76,25 +82,27 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
         }
 
         .global-controls {
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .btn {
             background-color: #2d2d2d;
             color: #fff;
             border: 1px solid #444;
-            padding: 8px 16px;
-            border-radius: 4px;
+            padding: 10px 18px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 0.9rem;
             transition: background-color 0.2s;
+            touch-action: manipulation;
         }
 
         .btn:hover {
@@ -104,15 +112,15 @@
         .template-section {
             background-color: var(--card-bg);
             border-radius: 8px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             overflow: hidden;
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
         .template-header {
-            padding: 15px 20px;
-            font-size: 1.25rem;
+            padding: 14px 16px;
+            font-size: 1.1rem;
             font-weight: bold;
             color: #ffffff;
             cursor: pointer;
@@ -120,6 +128,7 @@
             justify-content: space-between;
             align-items: center;
             user-select: none;
+            touch-action: manipulation;
         }
 
         .starter-header { background-color: var(--header-starter); }
@@ -128,7 +137,7 @@
 
         .arrow {
             transition: transform 0.2s ease;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .collapsed .arrow {
@@ -143,6 +152,7 @@
             display: none;
         }
 
+        /* TABLE BASE STYLES */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -151,7 +161,7 @@
         }
 
         th, td {
-            padding: 10px 15px;
+            padding: 10px 12px;
             border-bottom: 1px solid var(--border-color);
             vertical-align: top;
         }
@@ -172,6 +182,7 @@
             font-size: 0.95rem;
             cursor: pointer;
             user-select: none;
+            touch-action: manipulation;
         }
 
         .group-header-row:hover {
@@ -179,7 +190,7 @@
         }
 
         .group-header-row td {
-            padding: 10px 15px;
+            padding: 12px 15px;
             border-top: 1px solid #333;
             border-bottom: 1px solid #333;
         }
@@ -195,7 +206,7 @@
         }
 
         tr.rule-row.hidden {
-            display: none;
+            display: none !important;
         }
 
         .rule-num {
@@ -206,11 +217,12 @@
 
         .badge {
             display: inline-block;
-            padding: 3px 8px;
+            padding: 4px 8px;
             border-radius: 4px;
             font-size: 0.8rem;
             font-weight: bold;
             color: #000;
+            white-space: nowrap;
         }
 
         .badge-red { background-color: var(--accent-red); color: #fff; }
@@ -231,21 +243,108 @@
             margin-bottom: 2px;
         }
 
-        .section-title {
-            font-weight: bold;
-            margin-top: 4px;
-            color: #fff;
-        }
-
-        .section-title:first-child {
-            margin-top: 0;
-        }
-
         .sub-bullet-list {
             padding-left: 18px;
             margin-top: 3px;
             margin-bottom: 3px;
             color: #bbb;
+        }
+
+        /* RESPONSIVE MOBILE TRANSFORMATIONS */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .description {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 767px) {
+            /* Hide traditional table headers on mobile */
+            thead {
+                display: none;
+            }
+
+            /* Convert table elements to block/flex card components */
+            table, tbody, tr, td {
+                display: block;
+                width: 100%;
+            }
+
+            /* Individual rule card styling */
+            tr.rule-row {
+                padding: 12px;
+                border-bottom: 1px solid var(--border-color);
+                position: relative;
+                background-color: #1a1a1a;
+            }
+
+            tr.rule-row:nth-child(even) {
+                background-color: #161616;
+            }
+
+            td {
+                padding: 4px 0;
+                border: none;
+            }
+
+            /* Display Rule # and Action side-by-side in a header layout */
+            td.rule-num {
+                display: inline-block;
+                width: auto;
+                font-size: 1rem;
+                color: #4da6ff;
+                margin-right: 8px;
+            }
+
+            td:nth-child(2) {
+                display: inline-block;
+                width: auto;
+            }
+
+            /* Add visual pseudo-labels to key attributes */
+            td:nth-child(3)::before {
+                content: "Slot: ";
+                color: #888;
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                font-weight: 600;
+            }
+
+            td:nth-child(4)::before {
+                content: "Rarity/Quality: ";
+                color: #888;
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                font-weight: 600;
+            }
+
+            td:nth-child(3) {
+                font-weight: bold;
+                color: #fff;
+                margin-top: 6px;
+            }
+
+            td:nth-child(4) {
+                color: #ccc;
+                margin-bottom: 6px;
+            }
+
+            /* Give rule criteria a distinct container box */
+            td:nth-child(5) {
+                margin-top: 6px;
+                padding-top: 8px;
+                border-top: 1px dashed #333;
+            }
+
+            /* Full width group headers */
+            .group-header-row td {
+                padding: 12px;
+            }
         }
     </style>
 </head>
@@ -520,7 +619,7 @@ function renderTable(containerId, templateType) {
         let groupKey = `${templateType}-${r.groupId}`;
         html += `
             <tr class="rule-row row-${groupKey}">
-                <td class="rule-num">${r.num}</td>
+                <td class="rule-num">#${r.num}</td>
                 <td>${r.action}</td>
                 <td>${r.type}</td>
                 <td>${r.prop}</td>
