@@ -11,6 +11,8 @@
 
   <script>
     const CLIENT_ID = '42903';
+    // Replace with your actual Bungie API Key from the developer portal
+    const API_KEY = 'a9f4c23a44744d78ac61aa7e0afcd815';
 
     // 1. Check if Bungie redirected back with an auth code in the URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -47,6 +49,7 @@
         const response = await fetch(tokenUrl, {
           method: 'POST',
           headers: {
+            'X-API-Key': API_KEY,
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: bodyData.toString(),
@@ -67,7 +70,7 @@
           `;
         } else {
           document.getElementById('output').innerHTML = `
-            <p style="color: red;">Failed to get token: ${data.error_description || 'Unknown error'}</p>
+            <p style="color: red;">Failed to get token: ${data.error_description || data.Message || 'Unknown error'}</p>
           `;
         }
       } catch (err) {
