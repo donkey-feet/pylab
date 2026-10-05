@@ -35,6 +35,9 @@
     const authCode = urlParams.get('code');
 
     if (authCode) {
+      // Clean up the authorization code from the address bar for security
+      window.history.replaceState({}, document.title, window.location.pathname);
+
       document.getElementById('output').innerHTML = `
         <p style="color: green; font-weight: bold;">
           Successfully got code! Swapping for tokens...
