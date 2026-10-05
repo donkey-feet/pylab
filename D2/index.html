@@ -7,17 +7,22 @@
     body { font-family: sans-serif; padding: 20px; }
     .character-card {
       border: 1px solid #ccc;
-      padding: 10px;
+      padding: 15px;
       margin: 10px 0;
       border-radius: 6px;
-      max-width: 300px;
+      max-width: 400px;
+    }
+    .gear-list {
+      margin-top: 10px;
+      padding-left: 20px;
+      font-size: 0.9em;
     }
   </style>
 </head>
 <body>
   <h1>Destiny 2 Gear Manager</h1>
   <button id="login-btn">Log in with Bungie</button>
-  <button id="profile-btn" style="display:none;">Get Characters</button>
+  <button id="profile-btn" style="display:none;">Get Characters & Gear</button>
   <div id="output"></div>
   <div id="characters"></div>
 
@@ -96,11 +101,10 @@
       document.getElementById('profile-btn').style.display = 'inline-block';
     }
 
-    // 5. Fetch Destiny 2 Profile & Characters
+    // 5. Fetch Profile, Characters, & Character Equipment
     async function fetchProfile() {
       const token = localStorage.getItem('bungie_access_token');
       
-      // Get current user's Destiny membership
       try {
         const userResponse = await fetch('https://www.bungie.net/Platform/User/GetMembershipsForCurrentUser/', {
           headers: {
@@ -120,9 +124,9 @@
         const membershipType = destinyMembership.membershipType;
         const destinyMembershipId = destinyMembership.membershipId;
 
-        // Fetch profile with Component 200 (Characters)
+        // Fetch Profile with Components 200 (Characters) and 205 (CharacterEquipment)
         const profileResponse = await fetch(
-          `https://www.bungie.net/Platform/Destiny2/${membershipType}/Profile/${destinyMembershipId}/?components=200`,
+          `https://www.bungie.net/Platform/Destiny2/${membershipType}/Profile/${destinyMembershipId}/?components=200,205`,
           {
             headers: {
               'X-API-Key': API_KEY,
@@ -133,25 +137,37 @@
 
         const profileData = await profileResponse.json();
         const characters = profileData.Response.characters.data;
+        const characterEquipment = profileData.Response.characterEquipment.data;
 
-        displayCharacters(characters);
+        displayCharacters(characters, characterEquipment);
       } catch (err) {
         console.error('Error fetching profile:', err);
       }
     }
 
-    function displayCharacters(characters) {
+    function displayCharacters(characters, characterEquipment) {
       const classMap = { 0: 'Titan', 1: 'Hunter', 2: 'Warlock' };
       const container = document.getElementById('characters');
       container.innerHTML = '<h2>Your Characters:</h2>';
 
-      Object.values(characters).forEach((char) => {
+      Object.entries(characters).forEach(([charId, char]) => {
         const className = classMap[char.classType] || 'Unknown';
+        const equipment = characterEquipment[charId]?.items || [];
+
         const card = document.createElement('div');
         card.className = 'character-card';
+
+        let gearHtml = '<ul class="gear-list">';
+        equipment.forEach((item) => {
+          gearHtml += `<li>Item Hash: <strong>${item.itemHash}</strong> (Instance ID: ${item.itemInstanceId || 'N/A'})</li>`;
+        });
+        gearHtml += '</ul>';
+
         card.innerHTML = `
           <h3>${className}</h3>
           <p>Light Level: <strong>${char.light}</strong></p>
+          <h4>Equipped Items (${equipment.length}):</h4>
+          ${gearHtml}
         `;
         container.appendChild(card);
       });
