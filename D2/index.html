@@ -2,64 +2,58 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Destiny 2 Auth Test</title>
+  <title>Destiny 2 Gear Manager</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    .character-card {
-      border: 1px solid #ccc;
+    body { font-family: sans-serif; padding: 20px; background-color: #1a1a1a; color: #fff; }
+    button { padding: 10px 15px; margin-right: 10px; cursor: pointer; border: none; border-radius: 4px; background: #007acc; color: white; font-weight: bold; }
+    button:hover { background: #005999; }
+    .grid { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
+    .character-card, .vault-card {
+      border: 1px solid #444;
+      background: #2a2a2a;
       padding: 15px;
-      margin: 10px 0;
       border-radius: 6px;
-      max-width: 400px;
+      min-width: 280px;
+      max-width: 350px;
     }
-    .gear-list {
-      margin-top: 10px;
-      padding-left: 20px;
-      font-size: 0.9em;
-    }
+    .item-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; background: #333; padding: 5px; border-radius: 4px; }
+    .item-icon { width: 32px; height: 32px; border-radius: 3px; }
+    .item-name { font-size: 0.9em; font-weight: bold; }
   </style>
 </head>
 <body>
   <h1>Destiny 2 Gear Manager</h1>
   <button id="login-btn">Log in with Bungie</button>
-  <button id="profile-btn" style="display:none;">Get Characters & Gear</button>
+  <button id="profile-btn" style="display:none;">Get Gear & Vault</button>
   <div id="output"></div>
-  <div id="characters"></div>
+  <div id="characters" class="grid"></div>
 
   <script>
     const CLIENT_ID = '42903';
     const API_KEY = 'a9f4c23a44744d78ac61aa7e0afcd815';
+    let itemManifest = {};
 
     // 1. Check if Bungie redirected back with an auth code
     const urlParams = new URLSearchParams(window.location.search);
     const authCode = urlParams.get('code');
 
     if (authCode) {
-      // Clean up the authorization code from the address bar for security
       window.history.replaceState({}, document.title, window.location.pathname);
-
-      document.getElementById('output').innerHTML = `
-        <p style="color: green; font-weight: bold;">
-          Successfully got code! Swapping for tokens...
-        </p>
-      `;
+      document.getElementById('output').innerHTML = `<p style="color: #4caf50;">Logging in...</p>`;
       fetchToken(authCode);
     } else if (localStorage.getItem('bungie_access_token')) {
       showProfileButton();
     }
 
-    // 2. Handle Login Button Click
     document.getElementById('login-btn').addEventListener('click', () => {
       const authUrl = `https://www.bungie.net/en/OAuth/Authorize?client_id=${CLIENT_ID}&response_type=code`;
       window.location.href = authUrl;
     });
 
-    // 3. Handle Fetch Profile Button Click
     document.getElementById('profile-btn').addEventListener('click', () => {
-      fetchProfile();
+      fetchProfileAndGear();
     });
 
-    // 4. Swap Code for Tokens
     async function fetchToken(code) {
       const tokenUrl = 'https://www.bungie.net/Platform/App/OAuth/Token/';
       const bodyData = new URLSearchParams({
@@ -83,17 +77,8 @@
         if (data.access_token) {
           localStorage.setItem('bungie_access_token', data.access_token);
           localStorage.setItem('bungie_membership_id', data.membership_id);
-
-          document.getElementById('output').innerHTML = `
-            <p style="color: green; font-weight: bold;">
-              Access Token Acquired!
-            </p>
-          `;
+          document.getElementById('output').innerHTML = `<p style="color: #4caf50;">Access Token Acquired!</p>`;
           showProfileButton();
-        } else {
-          document.getElementById('output').innerHTML = `
-            <p style="color: red;">Failed to get token: ${data.error_description || 'Unknown error'}</p>
-          `;
         }
       } catch (err) {
         console.error('Error fetching token:', err);
@@ -104,76 +89,107 @@
       document.getElementById('profile-btn').style.display = 'inline-block';
     }
 
-    // 5. Fetch Profile, Characters, & Character Equipment
-    async function fetchProfile() {
+    // 2. Fetch Profile, Characters, Equipment, and Vault Items
+    async function fetchProfileAndGear() {
       const token = localStorage.getItem('bungie_access_token');
+      document.getElementById('output').innerHTML = '<p>Loading character gear and manifest...</p>';
       
       try {
         const userResponse = await fetch('https://www.bungie.net/Platform/User/GetMembershipsForCurrentUser/', {
-          headers: {
-            'X-API-Key': API_KEY,
-            'Authorization': `Bearer ${token}`,
-          },
+          headers: { 'X-API-Key': API_KEY, 'Authorization': `Bearer ${token}` },
         });
 
         const userData = await userResponse.json();
         const destinyMembership = userData.Response.destinyMemberships[0];
 
-        if (!destinyMembership) {
-          alert('No Destiny 2 profile found on this account.');
-          return;
-        }
+        if (!destinyMembership) return;
 
-        const membershipType = destinyMembership.membershipType;
-        const destinyMembershipId = destinyMembership.membershipId;
+        const { membershipType, membershipId } = destinyMembership;
 
-        // Fetch Profile with Components 200 (Characters) and 205 (CharacterEquipment)
+        // Fetch Components: 200 (Characters), 205 (Character Equipment), 102 (Vault / Profile Inventory)
         const profileResponse = await fetch(
-          `https://www.bungie.net/Platform/Destiny2/${membershipType}/Profile/${destinyMembershipId}/?components=200,205`,
+          `https://www.bungie.net/Platform/Destiny2/${membershipType}/Profile/${membershipId}/?components=200,205,102`,
           {
-            headers: {
-              'X-API-Key': API_KEY,
-              'Authorization': `Bearer ${token}`,
-            },
+            headers: { 'X-API-Key': API_KEY, 'Authorization': `Bearer ${token}` },
           }
         );
 
         const profileData = await profileResponse.json();
         const characters = profileData.Response.characters.data;
         const characterEquipment = profileData.Response.characterEquipment.data;
+        const vaultItems = profileData.Response.profileInventory.data.items;
 
-        displayCharacters(characters, characterEquipment);
+        // Fetch Manifest definitions to map item hashes to names/icons
+        await fetchManifestDefinitions();
+
+        displayInventory(characters, characterEquipment, vaultItems);
+        document.getElementById('output').innerHTML = '';
       } catch (err) {
         console.error('Error fetching profile:', err);
       }
     }
 
-    function displayCharacters(characters, characterEquipment) {
+    // 3. Fetch Item Manifest Definitions
+    async function fetchManifestDefinitions() {
+      try {
+        const res = await fetch('https://www.bungie.net/Platform/Destiny2/Manifest/', {
+          headers: { 'X-API-Key': API_KEY }
+        });
+        const manifestData = await res.json();
+        const itemDefUrl = manifestData.Response.jsonWorldComponentContentPaths.en.DestinyInventoryItemDefinition;
+
+        const itemsRes = await fetch(`https://www.bungie.net${itemDefUrl}`);
+        itemManifest = await itemsRes.json();
+      } catch (err) {
+        console.error('Failed to load item manifest:', err);
+      }
+    }
+
+    // 4. Render Characters + Vault
+    function displayInventory(characters, characterEquipment, vaultItems) {
       const classMap = { 0: 'Titan', 1: 'Hunter', 2: 'Warlock' };
       const container = document.getElementById('characters');
-      container.innerHTML = '<h2>Your Characters:</h2>';
+      container.innerHTML = '';
 
+      // Render Characters
       Object.entries(characters).forEach(([charId, char]) => {
         const className = classMap[char.classType] || 'Unknown';
         const equipment = characterEquipment[charId]?.items || [];
 
         const card = document.createElement('div');
         card.className = 'character-card';
-
-        let gearHtml = '<ul class="gear-list">';
-        equipment.forEach((item) => {
-          gearHtml += `<li>Item Hash: <strong>${item.itemHash}</strong> (Instance ID: ${item.itemInstanceId || 'N/A'})</li>`;
-        });
-        gearHtml += '</ul>';
-
         card.innerHTML = `
-          <h3>${className}</h3>
-          <p>Light Level: <strong>${char.light}</strong></p>
-          <h4>Equipped Items (${equipment.length}):</h4>
-          ${gearHtml}
+          <h3>${className} (${char.light} Light)</h3>
+          <h4>Equipped Gear:</h4>
+          ${renderItemList(equipment)}
         `;
         container.appendChild(card);
       });
+
+      // Render Vault Column
+      const vaultCard = document.createElement('div');
+      vaultCard.className = 'vault-card';
+      vaultCard.innerHTML = `
+        <h3>Vault Storage</h3>
+        <h4>Items (${vaultItems.length}):</h4>
+        ${renderItemList(vaultItems.slice(0, 15))} <!-- Display first 15 vault items -->
+      `;
+      container.appendChild(vaultCard);
+    }
+
+    function renderItemList(items) {
+      return items.map(item => {
+        const def = itemManifest[item.itemHash];
+        const name = def?.displayProperties?.name || `Item ${item.itemHash}`;
+        const icon = def?.displayProperties?.icon ? `https://www.bungie.net${def.displayProperties.icon}` : '';
+
+        return `
+          <div class="item-row">
+            ${icon ? `<img class="item-icon" src="${icon}" alt="${name}">` : ''}
+            <span class="item-name">${name}</span>
+          </div>
+        `;
+      }).join('');
     }
   </script>
 </body>
