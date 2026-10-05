@@ -3,18 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <title>Destiny 2 Auth Test</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .character-card {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      max-width: 300px;
+    }
+  </style>
 </head>
 <body>
   <h1>Destiny 2 Gear Manager</h1>
   <button id="login-btn">Log in with Bungie</button>
+  <button id="profile-btn" style="display:none;">Get Characters</button>
   <div id="output"></div>
+  <div id="characters"></div>
 
   <script>
     const CLIENT_ID = '42903';
-    // Replace with your actual Bungie API Key from the developer portal
     const API_KEY = 'a9f4c23a44744d78ac61aa7e0afcd815';
 
-    // 1. Check if Bungie redirected back with an auth code in the URL
+    // 1. Check if Bungie redirected back with an auth code
     const urlParams = new URLSearchParams(window.location.search);
     const authCode = urlParams.get('code');
 
@@ -24,21 +35,25 @@
           Successfully got code! Swapping for tokens...
         </p>
       `;
-
-      // Call Bungie token endpoint
       fetchToken(authCode);
+    } else if (localStorage.getItem('bungie_access_token')) {
+      showProfileButton();
     }
 
-    // 2. Handle button click to initiate login
+    // 2. Handle Login Button Click
     document.getElementById('login-btn').addEventListener('click', () => {
       const authUrl = `https://www.bungie.net/en/OAuth/Authorize?client_id=${CLIENT_ID}&response_type=code`;
       window.location.href = authUrl;
     });
 
-    // 3. Swap authorization code for access token
+    // 3. Handle Fetch Profile Button Click
+    document.getElementById('profile-btn').addEventListener('click', () => {
+      fetchProfile();
+    });
+
+    // 4. Swap Code for Tokens
     async function fetchToken(code) {
       const tokenUrl = 'https://www.bungie.net/Platform/App/OAuth/Token/';
-      
       const bodyData = new URLSearchParams({
         grant_type: 'authorization_code',
         code: code,
@@ -56,29 +71,90 @@
         });
 
         const data = await response.json();
-        console.log('Token Response:', data);
 
         if (data.access_token) {
-          // Store tokens in localStorage for future API requests
           localStorage.setItem('bungie_access_token', data.access_token);
           localStorage.setItem('bungie_membership_id', data.membership_id);
 
           document.getElementById('output').innerHTML = `
             <p style="color: green; font-weight: bold;">
-              Access Token Acquired! Check console for full response.
+              Access Token Acquired!
             </p>
           `;
+          showProfileButton();
         } else {
           document.getElementById('output').innerHTML = `
-            <p style="color: red;">Failed to get token: ${data.error_description || data.Message || 'Unknown error'}</p>
+            <p style="color: red;">Failed to get token: ${data.error_description || 'Unknown error'}</p>
           `;
         }
       } catch (err) {
         console.error('Error fetching token:', err);
-        document.getElementById('output').innerHTML = `
-          <p style="color: red;">Error making token request. Check browser console.</p>
-        `;
       }
+    }
+
+    function showProfileButton() {
+      document.getElementById('profile-btn').style.display = 'inline-block';
+    }
+
+    // 5. Fetch Destiny 2 Profile & Characters
+    async function fetchProfile() {
+      const token = localStorage.getItem('bungie_access_token');
+      
+      // Get current user's Destiny membership
+      try {
+        const userResponse = await fetch('https://www.bungie.net/Platform/User/GetMembershipsForCurrentUser/', {
+          headers: {
+            'X-API-Key': API_KEY,
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        const userData = await userResponse.json();
+        const destinyMembership = userData.Response.destinyMemberships[0];
+
+        if (!destinyMembership) {
+          alert('No Destiny 2 profile found on this account.');
+          return;
+        }
+
+        const membershipType = destinyMembership.membershipType;
+        const destinyMembershipId = destinyMembership.membershipId;
+
+        // Fetch profile with Component 200 (Characters)
+        const profileResponse = await fetch(
+          `https://www.bungie.net/Platform/Destiny2/${membershipType}/Profile/${destinyMembershipId}/?components=200`,
+          {
+            headers: {
+              'X-API-Key': API_KEY,
+              'Authorization': `Bearer ${token}`,
+            },
+          }
+        );
+
+        const profileData = await profileResponse.json();
+        const characters = profileData.Response.characters.data;
+
+        displayCharacters(characters);
+      } catch (err) {
+        console.error('Error fetching profile:', err);
+      }
+    }
+
+    function displayCharacters(characters) {
+      const classMap = { 0: 'Titan', 1: 'Hunter', 2: 'Warlock' };
+      const container = document.getElementById('characters');
+      container.innerHTML = '<h2>Your Characters:</h2>';
+
+      Object.values(characters).forEach((char) => {
+        const className = classMap[char.classType] || 'Unknown';
+        const card = document.createElement('div');
+        card.className = 'character-card';
+        card.innerHTML = `
+          <h3>${className}</h3>
+          <p>Light Level: <strong>${char.light}</strong></p>
+        `;
+        container.appendChild(card);
+      });
     }
   </script>
 </body>
