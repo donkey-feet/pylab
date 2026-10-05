@@ -5,8 +5,9 @@
   <title>Destiny 2 Gear Manager</title>
   <style>
     body { font-family: sans-serif; padding: 20px; background-color: #1a1a1a; color: #fff; }
-    button { padding: 10px 15px; margin-right: 10px; cursor: pointer; border: none; border-radius: 4px; background: #007acc; color: white; font-weight: bold; }
+    button { padding: 8px 12px; margin-right: 8px; cursor: pointer; border: none; border-radius: 4px; background: #007acc; color: white; font-weight: bold; }
     button:hover { background: #005999; }
+    .controls { margin-bottom: 20px; display: flex; gap: 10px; align-items: center; }
     .grid { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
     .character-card, .vault-card {
       border: 1px solid #444;
@@ -15,16 +16,31 @@
       border-radius: 6px;
       min-width: 280px;
       max-width: 350px;
+      flex: 1;
     }
-    .item-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; background: #333; padding: 5px; border-radius: 4px; }
+    .item-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; background: #333; padding: 6px; border-radius: 4px; justify-content: space-between; }
+    .item-info { display: flex; align-items: center; gap: 10px; }
     .item-icon { width: 32px; height: 32px; border-radius: 3px; }
-    .item-name { font-size: 0.9em; font-weight: bold; }
+    .item-name { font-size: 0.85em; font-weight: bold; }
+    .item-type { font-size: 0.75em; color: #aaa; }
+    .filter-btn { background: #444; }
+    .filter-btn.active { background: #007acc; }
   </style>
 </head>
 <body>
   <h1>Destiny 2 Gear Manager</h1>
-  <button id="login-btn">Log in with Bungie</button>
-  <button id="profile-btn" style="display:none;">Get Gear & Vault</button>
+  
+  <div class="controls">
+    <button id="login-btn">Log in with Bungie</button>
+    <button id="profile-btn" style="display:none;">Get Gear & Vault</button>
+    <span id="filter-group" style="display:none;">
+      Filter: 
+      <button class="filter-btn active" onclick="setFilter('all')">All</button>
+      <button class="filter-btn" onclick="setFilter('weapon')">Weapons</button>
+      <button class="filter-btn" onclick="setFilter('armor')">Armor</button>
+    </span>
+  </div>
+
   <div id="output"></div>
   <div id="characters" class="grid"></div>
 
@@ -32,6 +48,8 @@
     const CLIENT_ID = '42903';
     const API_KEY = 'a9f4c23a44744d78ac61aa7e0afcd815';
     let itemManifest = {};
+    let currentFilter = 'all';
+    let cachedData = null;
 
     // 1. Check if Bungie redirected back with an auth code
     const urlParams = new URLSearchParams(window.location.search);
@@ -87,6 +105,7 @@
 
     function showProfileButton() {
       document.getElementById('profile-btn').style.display = 'inline-block';
+      document.getElementById('filter-group').style.display = 'inline-block';
     }
 
     // 2. Fetch Profile, Characters, Equipment, and Vault Items
@@ -106,7 +125,7 @@
 
         const { membershipType, membershipId } = destinyMembership;
 
-        // Fetch Components: 200 (Characters), 205 (Character Equipment), 102 (Vault / Profile Inventory)
+        // Components: 200 (Characters), 205 (Character Equipment), 102 (Vault)
         const profileResponse = await fetch(
           `https://www.bungie.net/Platform/Destiny2/${membershipType}/Profile/${membershipId}/?components=200,205,102`,
           {
@@ -115,14 +134,17 @@
         );
 
         const profileData = await profileResponse.json();
-        const characters = profileData.Response.characters.data;
-        const characterEquipment = profileData.Response.characterEquipment.data;
-        const vaultItems = profileData.Response.profileInventory.data.items;
+        cachedData = {
+          characters: profileData.Response.characters.data,
+          characterEquipment: profileData.Response.characterEquipment.data,
+          vaultItems: profileData.Response.profileInventory.data.items,
+        };
 
-        // Fetch Manifest definitions to map item hashes to names/icons
-        await fetchManifestDefinitions();
+        if (Object.keys(itemManifest).length === 0) {
+          await fetchManifestDefinitions();
+        }
 
-        displayInventory(characters, characterEquipment, vaultItems);
+        renderAll();
         document.getElementById('output').innerHTML = '';
       } catch (err) {
         console.error('Error fetching profile:', err);
@@ -145,8 +167,17 @@
       }
     }
 
+    function setFilter(type) {
+      currentFilter = type;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      if (cachedData) renderAll();
+    }
+
     // 4. Render Characters + Vault
-    function displayInventory(characters, characterEquipment, vaultItems) {
+    function renderAll() {
+      if (!cachedData) return;
+      const { characters, characterEquipment, vaultItems } = cachedData;
       const classMap = { 0: 'Titan', 1: 'Hunter', 2: 'Warlock' };
       const container = document.getElementById('characters');
       container.innerHTML = '';
@@ -171,22 +202,37 @@
       vaultCard.className = 'vault-card';
       vaultCard.innerHTML = `
         <h3>Vault Storage</h3>
-        <h4>Items (${vaultItems.length}):</h4>
-        ${renderItemList(vaultItems.slice(0, 15))} <!-- Display first 15 vault items -->
+        <h4>Filtered Items:</h4>
+        ${renderItemList(vaultItems)}
       `;
       container.appendChild(vaultCard);
     }
 
     function renderItemList(items) {
-      return items.map(item => {
+      const filtered = items.filter(item => {
+        const def = itemManifest[item.itemHash];
+        if (!def) return true;
+        // itemType: 3 = Weapon, 2 = Armor
+        if (currentFilter === 'weapon') return def.itemType === 3;
+        if (currentFilter === 'armor') return def.itemType === 2;
+        return true;
+      });
+
+      return filtered.slice(0, 20).map(item => {
         const def = itemManifest[item.itemHash];
         const name = def?.displayProperties?.name || `Item ${item.itemHash}`;
         const icon = def?.displayProperties?.icon ? `https://www.bungie.net${def.displayProperties.icon}` : '';
+        const itemTypeDisplayName = def?.itemTypeDisplayName || '';
 
         return `
           <div class="item-row">
-            ${icon ? `<img class="item-icon" src="${icon}" alt="${name}">` : ''}
-            <span class="item-name">${name}</span>
+            <div class="item-info">
+              ${icon ? `<img class="item-icon" src="${icon}" alt="${name}">` : ''}
+              <div>
+                <div class="item-name">${name}</div>
+                <div class="item-type">${itemTypeDisplayName}</div>
+              </div>
+            </div>
           </div>
         `;
       }).join('');
