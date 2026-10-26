@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Destiny 2 Gear Manager</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background-color: #1a1a1a; color: #fff; }
+    button { padding: 8px 12px; margin-right: 8px; cursor: pointer; border: none; border-radius: 4px; background: #007acc; color: white; font-weight: bold; }
+    button:hover { background: #005999; }
+    .controls { margin-bottom: 20px; display: flex; gap: 10px; align-items: center; }
+    .grid { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
+    .character-card, .vault-card {
+      border: 1px solid #444;
+      background: #2a2a2a;
+      padding: 15px;
+      border-radius: 6px;
+      min-width: 280px;
+      max-width: 350px;
+      flex: 1;
+    }
+    .item-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; background: #333; padding: 6px; border-radius: 4px; justify-content: space-between; }
+    .item-info { display: flex; align-items: center; gap: 10px; }
+    .item-icon { width: 32px; height: 32px; border-radius: 3px; }
+    .item-name { font-size: 0.85em; font-weight: bold; }
+    .item-type { font-size: 0.75em; color: #aaa; }
+    .filter-btn { background: #444; }
+    .filter-btn.active { background: #007acc; }
+  </style>
+</head>
+<body>
+  <h1>Destiny 2 Gear Manager</h1>
+  
+  <div class="controls">
+    <button id="login-btn">Log in with Bungie</button>
+    <button id="profile-btn" style="display:none;">Get Gear & Vault</button>
+    <span id="filter-group" style="display:none;">
+      Filter: 
+      <button class="filter-btn active" onclick="setFilter('all')">All</button>
+      <button class="filter-btn" onclick="setFilter('weapon')">Weapons</button>
+      <button class="filter-btn" onclick="setFilter('armor')">Armor</button>
+    </span>
+  </div>
+
+  <div id="output"></div>
+  <details class="collapsible-section" id="weapons-section">
+    <summary>Weapons</summary>
+    <div class="filter-toolbar" id="weapons-filter"></div>
+    <div id="weapons-container" class="grid">
+      <div class="loading">Loading weapons...</div>
+    </div>
+  </details>
+  <details class="collapsible-section" id="armor-section">
+    <summary>Armor</summary>
+    <div class="filter-toolbar" id="armor-filter"></div>
+    <div id="armor-container" class="grid">
+      <div class="loading">Loading armor...</div>
+    </div>
+  </details>
+  <script
+    const CLIENT_ID = '42903';
+    const API_KEY = 'a9f4c23a44744d78ac61aa7e0afcd815';
+    let itemManifest = {};
+    let currentFilter = 'all';
+    let cachedData = null;
+
+    // 1. Check if Bungie redirected back with an auth code
+    const urlParams = new URLSearchParams(window.location.search);
+    const authCode = urlParams.get('code');
+
+    if (authCode) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+      document.getElementById('output').innerHTML = `<p style="color: #4caf50;">Logging in...</p>`;
+      fetchToken(authCode);
+    } else if (localStorage.getItem('bungie_access_token')) {
+      showProfileButton();
+    }
+
+    document.getElementById('login-btn').addEventListener('click', () => {
+    const redirectUri = encodeURIComponent('http://localhost:8080');
+    const authUrl = `https://www.bungie.net/en/OAuth/Authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${redirectUri}`;
+      window.location.href = authUrl;
+    });
+
+    document.getElementById('profile-btn').addEventListener('click', () => {
+      fetchProfileAndGear();
+    });
+
+    async function fetchToken(code) {
+      const tokenUrl = 'https://www.bungie.net/Platform/App/OAuth/Token/';
+      const bodyData = new URLSearchParams({
+        grant_type: 'authorization_code',
+        code: code,
+        client_id: CLIENT_ID,
+      });
+
+      try {
+        const response = await fetch(tokenUrl, {
+          method: 'POST',
+          headers: {
+            'X-API-Key': API_KEY,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: bodyData.toString(),
+        });
+
+        const data = await response.json();
+
+        if (data.access_token) {
+          localStorage.setItem('bungie_access_token', data.access_token);
+          localStorage.setItem('bungie_membership_id', data.membership_id);
+          document.getElementById('output').innerHTML = `<p style="color: #4caf50;">Access Token Acquired!</p>`;
+          showProfileButton();
+        }
+      } catch (err) {
+        console.error('Error fetching token:', err);
+      }
+    }
+
+    function showProfileButton() {
+      document.getElementById('profile-btn').style.display = 'inline-block';
+      document.getElementById('filter-group').style.display = 'inline-block';
+    }
+
+    // 2. Fetch Profile, Characters, Equipment, and Vault Items
+    async function fetchProfileAndGear() {
+      const token = localStorage.getItem('bungie_access_token');
+      document.getElementById('output').innerHTML = '<p>Loading character gear and manifest...</p>';
+      
+      try {
+        const userResponse = await fetch('https://www.bungie.net/Platform/User/GetMembershipsForCurrentUser/', {
+          headers: { 'X-API-Key': API_KEY, 'Authorization': `Bearer ${token}` },
+        });
+
+        const userData = await userResponse.json();
+        const destinyMembership = userData.Response.destinyMemberships[0];
+
+        if (!destinyMembership) return;
+
+        const { membershipType, membershipId } = destinyMembership;
+
+        // Components: 200 (Characters), 205 (Character Equipment), 102 (Vault)
+        const profileResponse = await fetch(
+          `https://www.bungie.net/Platform/Destiny2/${membershipType}/Profile/${membershipId}/?components=200,205,102`,
+          {
+            headers: { 'X-API-Key': API_KEY, 'Authorization': `Bearer ${token}` },
+          }
+        );
+
+        const profileData = await profileResponse.json();
+        cachedData = {
+          characters: profileData.Response.characters.data,
+          characterEquipment: profileData.Response.characterEquipment.data,
+          vaultItems: profileData.Response.profileInventory.data.items,
+        };
+
+        if (Object.keys(itemManifest).length === 0) {
+          await fetchManifestDefinitions();
+        }
+
+        renderAll();
+        document.getElementById('output').innerHTML = '';
+      } catch (err) {
+        console.error('Error fetching profile:', err);
+      }
+    }
+
+    // 3. Fetch Item Manifest Definitions
+    async function fetchManifestDefinitions() {
+      try {
+        const res = await fetch('https://www.bungie.net/Platform/Destiny2/Manifest/', {
+          headers: { 'X-API-Key': API_KEY }
+        });
+        const manifestData = await res.json();
+        const itemDefUrl = manifestData.Response.jsonWorldComponentContentPaths.en.DestinyInventoryItemDefinition;
+
+        const itemsRes = await fetch(`https://www.bungie.net${itemDefUrl}`);
+        itemManifest = await itemsRes.json();
+      } catch (err) {
+        console.error('Failed to load item manifest:', err);
+      }
+    }
+
+    function setFilter(type) {
+      currentFilter = type;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      if (cachedData) renderAll();
+    }
+
+    // 4. Render Characters + Vault
+    function renderAll() {
+      if (!cachedData) return;
+      const { characters, characterEquipment, vaultItems } = cachedData;
+      const classMap = { 0: 'Titan', 1: 'Hunter', 2: 'Warlock' };
+      const container = document.getElementById('characters');
+      container.innerHTML = '';
+
+      // Render Characters
+      Object.entries(characters).forEach(([charId, char]) => {
+        const className = classMap[char.classType] || 'Unknown';
+        const equipment = characterEquipment[charId]?.items || [];
+
+        const card = document.createElement('div');
+        card.className = 'character-card';
+        card.innerHTML = `
+          <h3>${className} (${char.light} Light)</h3>
+          <h4>Equipped Gear:</h4>
+          ${renderItemList(equipment)}
+        `;
+        container.appendChild(card);
+      });
+
+      // Render Vault Column
+      const vaultCard = document.createElement('div');
+      vaultCard.className = 'vault-card';
+      vaultCard.innerHTML = `
+        <div class="collapsible-section weapons">
+          <h3>Weapons</h3>
+          <div class="filter-toolbar">
+            <button class="filter-btn active" onclick="setFilter('weapon-all')">All</button>
+            <button class="filter-btn" onclick="setFilter('weapon-rare')">Rare</button>
+          </div>
+          <div class="items-list">${renderItemList(vaultItems, 'weapon')}</div>
+        </div>
+        <div class="collapsible-section armor">
+          <h3>Armor</h3>
+          <div class="filter-toolbar">
+            <button class="filter-btn active" onclick="setFilter('armor-all')">All</button>
+            <button class="filter-btn" onclick="setFilter('armor-rare')">Rare</button>
+          </div>
+          <div class="items-list">${renderItemList(vaultItems, 'armor')}</div>
+        </div>
+      `;
+      container.appendChild(vaultCard);
+    }
+
+    function renderItemList(items) {
+      const filtered = items.filter(item => {
+        const def = itemManifest[item.itemHash];
+        if (!def) return true;
+        // itemType: 3 = Weapon, 2 = Armor
+        if (currentFilter === 'weapon') return def.itemType === 3;
+        if (currentFilter === 'armor') return def.itemType === 2;
+        return true;
+      });
+
+      return filtered.slice(0, 20).map(item => {
+        const def = itemManifest[item.itemHash];
+        const name = def?.displayProperties?.name || `Item ${item.itemHash}`;
+        const icon = def?.displayProperties?.icon ? `https://www.bungie.net${def.displayProperties.icon}` : '';
+        const itemTypeDisplayName = def?.itemTypeDisplayName || '';
+
+        return `
+          <div class="item-row">
+            <div class="item-info">
+              ${icon ? `<img class="item-icon" src="${icon}" alt="${name}">` : ''}
+              <div>
+                <div class="item-name">${name}</div>
+                <div class="item-type">${itemTypeDisplayName}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html>
