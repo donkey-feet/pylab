@@ -83,7 +83,9 @@ function fetchToken(code) {
 // 5. Initialize UI
 function init() {
   document.getElementById('login-btn').addEventListener('click', () => {
-    // ... (existing implementation)
+    const redirectUri = encodeURIComponent('http://localhost:8080');
+    const authUrl = `https://www.bungie.net/en/OAuth/Authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${redirectUri}`;
+    window.location.href = authUrl;
   });
   
   document.getElementById('profile-btn').addEventListener('click', () => {
