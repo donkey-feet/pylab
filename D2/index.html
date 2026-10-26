@@ -42,9 +42,21 @@
   </div>
 
   <div id="output"></div>
-  <div id="characters" class="grid"></div>
-
-  <script>
+  <details class="collapsible-section" id="weapons-section">
+    <summary>Weapons</summary>
+    <div class="filter-toolbar" id="weapons-filter"></div>
+    <div id="weapons-container" class="grid">
+      <div class="loading">Loading weapons...</div>
+    </div>
+  </details>
+  <details class="collapsible-section" id="armor-section">
+    <summary>Armor</summary>
+    <div class="filter-toolbar" id="armor-filter"></div>
+    <div id="armor-container" class="grid">
+      <div class="loading">Loading armor...</div>
+    </div>
+  </details>
+  <script
     const CLIENT_ID = '42903';
     const API_KEY = 'a9f4c23a44744d78ac61aa7e0afcd815';
     let itemManifest = {};
@@ -201,9 +213,22 @@
       const vaultCard = document.createElement('div');
       vaultCard.className = 'vault-card';
       vaultCard.innerHTML = `
-        <h3>Vault Storage</h3>
-        <h4>Filtered Items:</h4>
-        ${renderItemList(vaultItems)}
+        <div class="collapsible-section weapons">
+          <h3>Weapons</h3>
+          <div class="filter-toolbar">
+            <button class="filter-btn active" onclick="setFilter('weapon-all')">All</button>
+            <button class="filter-btn" onclick="setFilter('weapon-rare')">Rare</button>
+          </div>
+          <div class="items-list">${renderItemList(vaultItems, 'weapon')}</div>
+        </div>
+        <div class="collapsible-section armor">
+          <h3>Armor</h3>
+          <div class="filter-toolbar">
+            <button class="filter-btn active" onclick="setFilter('armor-all')">All</button>
+            <button class="filter-btn" onclick="setFilter('armor-rare')">Rare</button>
+          </div>
+          <div class="items-list">${renderItemList(vaultItems, 'armor')}</div>
+        </div>
       `;
       container.appendChild(vaultCard);
     }
