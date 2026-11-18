@@ -9,6 +9,12 @@ let bungieApiKey = BUNGIE_API_KEY;
 let clientId = CLIENT_ID;
 let redirectUrl = REDIRECT_URL;
 
+// Add error handling for missing configuration
+if (!clientId || !redirectUrl) {
+    console.error('Missing Bungie API configuration. Please check your config.js file.');
+    alert('Configuration error: Missing Bungie API credentials. Please check the console for details.');
+}
+
 // DOM Elements
 const loginSection = document.getElementById('login-section');
 const inventorySection = document.getElementById('inventory-section');
@@ -43,15 +49,21 @@ function setCredentials(apiKey, client, redirect) {
 
 // Handle login button click - redirect to Bungie OAuth
 function handleLogin() {
+    console.log('Login button clicked');
+    console.log('Client ID:', clientId);
+    console.log('Redirect URL:', redirectUrl);
+    
     // Check if we have credentials configured
     if (!clientId || !redirectUrl) {
         alert('Please configure your Bungie API credentials in config.js');
+        console.error('Missing credentials for login');
         return;
     }
     
     // Redirect to Bungie's OAuth endpoint with your credentials
     const authUrl = `https://www.bungie.net/en/OAuth/Authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUrl)}&scope=ReadUserData`;
     
+    console.log('Redirecting to:', authUrl);
     window.location.href = authUrl;
 }
 
