@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny 2 Armor & Weapons Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Destiny 2 Armor & Weapons Manager</h1>
+        <p>Manage your Destiny 2 inventory with ease</p>
+    </header>
+
+    <main>
+        <section id="login-section">
+            <div class="container">
+                <h2>Connect Your Bungie Account</h2>
+                <p>To use this application, you need to connect your Bungie.net account.</p>
+                <button id="login-btn">Login with Bungie</button>
+                <div id="user-info" style="display: none;">
+                    <p>Welcome, <span id="username"></span>!</p>
+                    <button id="logout-btn">Logout</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="inventory-section" style="display: none;">
+            <div class="container">
+                <h2>Your Inventory</h2>
+                <div class="filters">
+                    <select id="item-type-filter">
+                        <option value="all">All Items</option>
+                        <option value="armor">Armor</option>
+                        <option value="weapons">Weapons</option>
+                    </select>
+                    <select id="item-tier-filter">
+                        <option value="all">All Tiers</option>
+                        <option value="common">Common</option>
+                        <option value="uncommon">Uncommon</option>
+                        <option value="rare">Rare</option>
+                        <option value="epic">Epic</option>
+                        <option value="legendary">Legendary</option>
+                    </select>
+                </div>
+                
+                <div id="inventory-items" class="items-grid">
+                    <!-- Inventory items will be populated here -->
+                </div>
+            </div>
+        </section>
+
+        <section id="loading-section" style="display: none;">
+            <div class="container">
+                <h2>Loading...</h2>
+                <p>Please wait while we fetch your inventory data.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Destiny 2 Armor & Weapons Manager | Data provided by Bungie.net</p>
+    </footer>
+
+    <script src="script.js" type="module"></script>
+</body>
+</html>
