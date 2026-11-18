@@ -1,5 +1,5 @@
 // Import configuration
-import { BUNGIE_API_KEY, CLIENT_ID, REDIRECT_URL } from './config.js';
+import { BUNGIE_API_KEY, CLIENT_ID, REDIRECT_URL } from '/pylab/D2/config.js';
 
 // Global variables
 let currentUser = null;
