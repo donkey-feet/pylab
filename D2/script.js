@@ -1,13 +1,39 @@
-// Import configuration
-import { BUNGIE_API_KEY, CLIENT_ID, REDIRECT_URL } from './config.js';
-
 // Global variables
 let currentUser = null;
 let inventoryData = [];
-// These will be set from config.js
-let bungieApiKey = BUNGIE_API_KEY;
-let clientId = CLIENT_ID;
-let redirectUrl = REDIRECT_URL;
+let bungieApiKey = '';
+let clientId = '';
+let redirectUrl = '';
+
+// Initialize the app
+document.addEventListener('DOMContentLoaded', function() {
+    // Load configuration when script loads
+    async function initializeApp() {
+        try {
+            const configModule = await import('./config.js');
+            bungieApiKey = configModule.BUNGIE_API_KEY;
+            clientId = configModule.CLIENT_ID;
+            redirectUrl = configModule.REDIRECT_URL;
+            console.log('Configuration loaded successfully');
+            console.log('Client ID:', clientId);
+            console.log('Redirect URL:', redirectUrl);
+        } catch (error) {
+            console.error('Failed to load configuration, using fallback values:', error);
+            // Fallback - these should be replaced with actual values for your app
+            bungieApiKey = 'a9f4c23a44744d78ac61aa7e0afcd815';
+            clientId = '42903';
+            redirectUrl = 'https://donkey-feet.github.io/pylab/D2/index.html';
+        }
+    }
+    
+    initializeApp();
+    
+    // Event Listeners
+    loginBtn.addEventListener('click', handleLogin);
+    logoutBtn.addEventListener('click', handleLogout);
+    itemTypeFilter.addEventListener('change', filterInventory);
+    itemTierFilter.addEventListener('change', filterInventory);
+});
 
 // Add error handling for missing configuration
 if (!clientId || !redirectUrl) {
