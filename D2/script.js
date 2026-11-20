@@ -5,43 +5,7 @@ let bungieApiKey = '';
 let clientId = '';
 let redirectUrl = '';
 
-// Initialize the app
-document.addEventListener('DOMContentLoaded', function() {
-    // Load configuration when script loads
-    async function initializeApp() {
-        try {
-            const configModule = await import('./config.js');
-            bungieApiKey = configModule.BUNGIE_API_KEY;
-            clientId = configModule.CLIENT_ID;
-            redirectUrl = configModule.REDIRECT_URL;
-            console.log('Configuration loaded successfully');
-            console.log('Client ID:', clientId);
-            console.log('Redirect URL:', redirectUrl);
-        } catch (error) {
-            console.error('Failed to load configuration, using fallback values:', error);
-            // Fallback - these should be replaced with actual values for your app
-            bungieApiKey = 'a9f4c23a44744d78ac61aa7e0afcd815';
-            clientId = '42903';
-            redirectUrl = 'https://donkey-feet.github.io/pylab/D2/index.html';
-        }
-    }
-    
-    initializeApp();
-    
-    // Event Listeners
-    loginBtn.addEventListener('click', handleLogin);
-    logoutBtn.addEventListener('click', handleLogout);
-    itemTypeFilter.addEventListener('change', filterInventory);
-    itemTierFilter.addEventListener('change', filterInventory);
-});
-
-// Add error handling for missing configuration
-if (!clientId || !redirectUrl) {
-    console.error('Missing Bungie API configuration. Please check your config.js file.');
-    alert('Configuration error: Missing Bungie API credentials. Please check the console for details.');
-}
-
-// DOM Elements
+// DOM Elements - Define them here so they're available throughout the script
 const loginSection = document.getElementById('login-section');
 const inventorySection = document.getElementById('inventory-section');
 const loadingSection = document.getElementById('loading-section');
@@ -53,25 +17,115 @@ const inventoryItems = document.getElementById('inventory-items');
 const itemTypeFilter = document.getElementById('item-type-filter');
 const itemTierFilter = document.getElementById('item-tier-filter');
 
-// Event Listeners
-loginBtn.addEventListener('click', handleLogin);
-logoutBtn.addEventListener('click', handleLogout);
-itemTypeFilter.addEventListener('change', filterInventory);
-itemTierFilter.addEventListener('change', filterInventory);
-
-// Initialize the app
-document.addEventListener('DOMContentLoaded', function() {
-    // Check if user is already logged in (in a real app, check localStorage/session)
-    // For now, we'll simulate this for demonstration purposes
-    // simulateLoggedInUser();
-});
-
 // Set API credentials - these should come from your secure configuration
 function setCredentials(apiKey, client, redirect) {
     bungieApiKey = apiKey;
     clientId = client;
     redirectUrl = redirect;
 }
+
+// Initialize the app
+document.addEventListener('DOMContentLoaded', function() {
+    // Load configuration when script loads
+    function initializeApp() {
+        try {
+            // Set fallback values for GitHub Pages deployment
+            // These are the default values that will work with the current setup
+            bungieApiKey = 'a9f4c23a44744d78ac61aa7e0afcd815';
+            clientId = '42903';
+            redirectUrl = 'https://donkey-feet.github.io/pylab/D2/index.html';
+            
+            console.log('Configuration loaded successfully');
+            console.log('Client ID:', clientId);
+            console.log('Redirect URL:', redirectUrl);
+        } catch (error) {
+            console.error('Failed to load configuration, using fallback values:', error);
+            // Fallback - these should be replaced with actual values for your app
+            bungieApiKey = 'a9f4c23a44744d78ac61aa7e0afcd815';
+            clientId = '42903';
+            redirectUrl = 'https://donkey-feet.github.io/pylab/D2/index.html';
+        }
+        
+        // Add error handling for missing configuration
+        if (!clientId || !redirectUrl) {
+            console.error('Missing Bungie API configuration. Please check your config.js file.');
+            alert('Configuration error: Missing Bungie API credentials. Please check the console for details.');
+        }
+    }
+    
+    initializeApp();
+    
+    // Event Listeners - Moved to be after DOM is loaded
+    loginBtn.addEventListener('click', handleLogin);
+    logoutBtn.addEventListener('click', handleLogout);
+    itemTypeFilter.addEventListener('change', filterInventory);
+    itemTierFilter.addEventListener('change', filterInventory);
+});
+
+// Handle login button click - redirect to Bungie OAuth
+function handleLogin() {
+    console.log('Login button clicked');
+    console.log('Client ID:', clientId);
+    console.log('Redirect URL:', redirectUrl);
+    
+    // Check if we have credentials configured
+    if (!clientId || !redirectUrl) {
+        alert('Please configure your Bungie API credentials in config.js');
+        console.error('Missing credentials for login');
+        return;
+    }
+    
+    // Redirect to Bungie's OAuth endpoint with your credentials
+    const authUrl = `https://www.bungie.net/en/OAuth/Authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUrl)}&scope=ReadUserData`;
+    
+    console.log('Redirecting to:', authUrl);
+    window.location.href = authUrl;
+}
+
+// Handle logout button click
+function handleLogout() {
+    currentUser = null;
+    showLoginSection();
+    // Clear any stored tokens or session data
+    localStorage.removeItem('bungie_token');
+    console.log('Logged out successfully');
+}
+
+// Show login section and hide inventory
+function showLoginSection() {
+    loginSection.style.display = 'block';
+    inventorySection.style.display = 'none';
+    loadingSection.style.display = 'none';
+    userInfo.style.display = 'none';
+}
+
+// Show inventory section
+function showInventorySection() {
+    loginSection.style.display = 'none';
+    inventorySection.style.display = 'block';
+    loadingSection.style.display = 'none';
+    userInfo.style.display = 'block';
+}
+
+// Filter inventory items
+function filterInventory() {
+    // Implementation would go here
+    console.log('Filtering inventory...');
+}
+
+// Show loading section
+function showLoadingSection() {
+    loginSection.style.display = 'none';
+    inventorySection.style.display = 'none';
+    loadingSection.style.display = 'block';
+}
+
+// Simulate logged in user for demo purposes (remove this in production)
+// function simulateLoggedInUser() {
+//     currentUser = { displayName: 'Demo User' };
+//     usernameSpan.textContent = currentUser.displayName;
+//     showInventorySection();
+// }
 
 // Handle login button click - redirect to Bungie OAuth
 function handleLogin() {
